@@ -12,17 +12,19 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { getSettings, updateSettings, type AppSettings } from '@/data/settings';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import Image from 'next/image';
 
 const settingsSchema = z.object({
   title: z.string().min(1, 'Judul harus diisi.'),
   description: z.string().min(1, 'Deskripsi harus diisi.'),
-  logoUrl: z.string().url('URL logo tidak valid.').or(z.literal('')),
+  logoUrl: z.string(), // Can be URL or Data URL
   footerText: z.string().min(1, 'Teks footer harus diisi.'),
 });
 
 export default function SettingsPage() {
   const { toast } = useToast();
   const [initialSettings, setInitialSettings] = useState<AppSettings>(getSettings());
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof settingsSchema>>({
     resolver: zodResolver(settingsSchema),
@@ -33,7 +35,23 @@ export default function SettingsPage() {
     const settings = getSettings();
     setInitialSettings(settings);
     form.reset(settings);
+    if (settings.logoUrl) {
+      setLogoPreview(settings.logoUrl);
+    }
   }, [form]);
+
+  const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        form.setValue('logoUrl', dataUrl);
+        setLogoPreview(dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const onSubmit = (values: z.infer<typeof settingsSchema>) => {
     updateSettings(values);
@@ -85,19 +103,18 @@ export default function SettingsPage() {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="logoUrl"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>URL Logo</FormLabel>
-                                <FormControl>
-                                    <Input {...field} placeholder="https://example.com/logo.png" />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
+                    <FormItem>
+                        <FormLabel>Logo Aplikasi</FormLabel>
+                         {logoPreview && (
+                            <div className="mt-2">
+                                <Image src={logoPreview} alt="Logo Preview" width={80} height={80} className="rounded-md object-contain border p-2" />
+                            </div>
                         )}
-                    />
+                        <FormControl>
+                           <Input type="file" accept="image/*" onChange={handleLogoChange} className="mt-2" />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
                 </CardContent>
             </Card>
 
