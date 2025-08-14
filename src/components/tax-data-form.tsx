@@ -48,6 +48,8 @@ const allOptions = {
     asnNonAsn: ['ASN', 'NON ASN', 'Tidak ada'],
     golongan: ['I', 'II', 'III', 'IV', 'Tidak ada'],
     sertifikatKonstruksi: ['Ada', 'Tidak Ada', 'Tidak ada'],
+    jenisPajak: ['PPh 21', 'PPh 22', 'PPh 23', 'Pasal 4 ayat 2', 'PPN'],
+    tarifPajak: ['0%', '0,5%', '1,5%', '1,75%', '2%', '2,5%', '3,5%', '4%', '5%', '6%', '15%', '30%', '35%'],
     kenaPpn: ['ya', 'tidak'],
     status: ['aktif', 'non-aktif'],
 };
@@ -159,7 +161,7 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
                         <FormItem><FormLabel>Sertifikat Konstruksi</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value || 'Tidak ada'}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{allOptions.sertifikatKonstruksi.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="jenisPajak" render={({ field }) => (
-                        <FormItem><FormLabel>Jenis Pajak</FormLabel><FormControl><Input {...field} value={field.value || ''} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Jenis Pajak</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value || undefined}><FormControl><SelectTrigger><SelectValue placeholder="Pilih jenis pajak..." /></SelectTrigger></FormControl><SelectContent>{allOptions.jenisPajak.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="kodePajakEbillingPPh" render={({ field }) => (
                         <FormItem><FormLabel>Kode Pajak PPh</FormLabel><FormControl><Input {...field} value={field.value || ''} /></FormControl><FormMessage /></FormItem>
@@ -171,16 +173,27 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
                         <FormItem><FormLabel>PTKP</FormLabel><FormControl><Input {...field} value={field.value || ''} placeholder="Contoh: > 2000000 atau 0-450000"/></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="tarifPajak" render={({ field }) => (
-                        <FormItem><FormLabel>Tarif Pajak</FormLabel><FormControl><Input {...field} value={field.value || ''} placeholder="Contoh: 2,5%" /></FormControl><FormMessage /></FormItem>
+                        <FormItem>
+                            <FormLabel>Tarif Pajak</FormLabel>
+                            <FormControl>
+                                <>
+                                    <Input {...field} list="tarif-pajak-options" value={field.value || ''} placeholder="Contoh: 2,5%" />
+                                    <datalist id="tarif-pajak-options">
+                                        {allOptions.tarifPajak.map(o => <option key={o} value={o} />)}
+                                    </datalist>
+                                </>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
                     )} />
                     <FormField control={form.control} name="kenaPpn" render={({ field }) => (
-                        <FormItem><FormLabel>Kena PPN</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value || 'tidak'}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{allOptions.kenaPpn.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Kena PPN</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value || 'tidak'}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{allOptions.kenaPpn.map(o => <SelectItem key={o} value={o}>{o.charAt(0).toUpperCase() + o.slice(1)}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="kodePajakEbillingPpn" render={({ field }) => (
                         <FormItem><FormLabel>Kode Pajak PPN</FormLabel><FormControl><Input {...field} value={field.value || ''}/></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="status" render={({ field }) => (
-                        <FormItem><FormLabel>Status</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{allOptions.status.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Status</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{allOptions.status.map(o => <SelectItem key={o} value={o}>{o.charAt(0).toUpperCase() + o.slice(1)}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                     )} />
                 </div>
             </ScrollArea>
