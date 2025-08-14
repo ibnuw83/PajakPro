@@ -165,9 +165,24 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
                 )} />
                 
                 <h3 className="text-sm font-medium text-muted-foreground mt-6 pt-4 border-t">Hasil Perhitungan (Aksi)</h3>
-                    <FormField control={form.control} name="jenisPajak" render={({ field }) => (
-                    <FormItem><FormLabel>Maka Jenis Pajak yang berlaku adalah...</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value || undefined}><FormControl><SelectTrigger><SelectValue placeholder="Pilih jenis pajak..." /></SelectTrigger></FormControl><SelectContent>{allOptions.jenisPajak.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
-                )} />
+                <FormField
+                    control={form.control}
+                    name="jenisPajak"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Maka Jenis Pajak yang berlaku adalah...</FormLabel>
+                        <FormControl>
+                            <div>
+                                <Input {...field} list="jenis-pajak-options" value={field.value || ''} placeholder="Contoh: PPh 21 atau ketik manual" />
+                                <datalist id="jenis-pajak-options">
+                                    {allOptions.jenisPajak.map(o => <option key={o} value={o} />)}
+                                </datalist>
+                            </div>
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
                     <FormField control={form.control} name="kodePajakEbillingPPh" render={({ field }) => (
                     <FormItem><FormLabel>Kode Pajak PPh</FormLabel><FormControl><Input {...field} value={field.value || ''} /></FormControl><FormMessage /></FormItem>
                 )} />
