@@ -12,7 +12,7 @@ import { type TaxDataRow } from "@/lib/types"
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { MoreHorizontal } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "./ui/dropdown-menu";
 
 interface TaxDataTableProps {
   data: TaxDataRow[];
@@ -27,6 +27,7 @@ export function TaxDataTable({ data }: TaxDataTableProps) {
           <TableHead>WP</TableHead>
           <TableHead>Jenis Pajak</TableHead>
           <TableHead>Tarif</TableHead>
+          <TableHead>Status</TableHead>
           <TableHead>Kena PPN</TableHead>
           <TableHead className="text-right">Aksi</TableHead>
         </TableRow>
@@ -40,6 +41,11 @@ export function TaxDataTable({ data }: TaxDataTableProps) {
               <Badge variant="outline">{row.jenisPajak}</Badge>
             </TableCell>
             <TableCell>{row.tarifPajak}</TableCell>
+             <TableCell>
+              <Badge variant={row.status === 'aktif' ? 'default' : 'secondary'}>
+                {row.status?.toUpperCase() || 'AKTIF'}
+              </Badge>
+            </TableCell>
             <TableCell>
               <Badge variant={row.kenaPpn === 'ya' ? 'default' : 'secondary'}>
                 {row.kenaPpn?.toUpperCase()}
@@ -56,7 +62,11 @@ export function TaxDataTable({ data }: TaxDataTableProps) {
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                         <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Hapus</DropdownMenuItem>
+                        <DropdownMenuItem>
+                            {row.status === 'aktif' ? 'Non-aktifkan' : 'Aktifkan'}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">Hapus</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>

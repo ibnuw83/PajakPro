@@ -12,6 +12,7 @@ export type TaxDataRow = {
   tarifPajak: string | null;
   kenaPpn: string | null;
   kodePajakEbillingPpn: string | null;
+  status?: 'aktif' | 'non-aktif';
 };
 
 export interface CalculationResult {

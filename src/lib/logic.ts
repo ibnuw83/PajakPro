@@ -20,6 +20,11 @@ function checkPtkp(ptkp: string | null, value: number) {
 
 export function findMatchingRule(values: z.infer<typeof formSchema>, data: TaxDataRow[]): TaxDataRow | undefined {
     return data.find(rule => {
+        // Only match active rules
+        if (rule.status === 'non-aktif') {
+            return false;
+        }
+
         const isHonor = values.jenisTransaksi.includes('Honor');
         const isConstruction = values.jenisTransaksi.includes('Konstruksi') || values.jenisTransaksi.includes('Pemeliharaan Bangunan');
 

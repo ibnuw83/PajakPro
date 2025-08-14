@@ -15,6 +15,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2,5%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Service Kendaraan, AC,Laptop, dll',
@@ -30,6 +31,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2,5%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Sewa (Alat kesenian, Genset, Sound System, Kendaraan,dll)',
@@ -45,6 +47,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2,5%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Fotokopi/Cetak banner,dll',
@@ -60,6 +63,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2,5%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Honor (Narsum, Juri, dll)',
@@ -75,6 +79,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '15%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Honor (Narsum, Juri, dll)',
@@ -90,6 +95,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '5%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Honor (Narsum, Juri, dll)',
@@ -105,6 +111,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '0%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Honor (Narsum, Juri, dll)',
@@ -120,6 +127,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '0%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Honor (Narsum, Juri, dll)',
@@ -135,6 +143,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '5%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Jasa Pentas Seni (Tari, Wayang, dll)',
@@ -150,6 +159,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2,5%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Tukang Harian (Pekerja lepas)',
@@ -165,6 +175,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '0%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Tukang Harian (Pekerja lepas)',
@@ -180,6 +191,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '0,5%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Tukang Harian (Pekerja lepas)',
@@ -195,6 +207,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2,5%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Hadiah Lomba',
@@ -210,6 +223,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '5%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Pembelian Barang (ATK, Komputer, Material, dll)',
@@ -225,6 +239,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '1,5%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Pembelian Barang (ATK, Komputer, Material, dll)',
@@ -240,6 +255,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '1,5%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Makan Minum',
@@ -255,6 +271,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Service Kendaraan, AC,Laptop, dll',
@@ -270,6 +287,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Sewa (Alat kesenian, Genset, Sound System, Kendaraan,dll)',
@@ -285,6 +303,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Sewa Kendaraan Plat Kuning',
@@ -300,6 +319,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Fotokopi/Cetak banner,dll',
@@ -315,6 +335,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Jasa Pentas Seni (Tari, Wayang, dll)',
@@ -330,6 +351,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Jasa Penyelenggara Acara (EO)',
@@ -345,6 +367,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Belanja Premi Asuransi',
@@ -360,6 +383,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Pemeliharaan Bangunan (Service lampu, pipa bocor, pengecatan ringan)',
@@ -375,6 +399,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Pemeliharaan Bangunan (ganti atap, sekat permanen, perbaikan struktur)',
@@ -390,6 +415,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '1,75%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Pemeliharaan Bangunan (ganti atap, sekat permanen, perbaikan struktur)',
@@ -405,6 +431,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '4%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Jasa Konsultasi Konstruksi',
@@ -420,6 +447,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '3,5%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Jasa Konsultasi Konstruksi',
@@ -435,6 +463,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '6%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-900', // Adjusted
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Service Kendaraan, AC,Laptop, dll',
@@ -450,6 +479,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Sewa (Alat kesenian, Genset, Sound System, Kendaraan,dll)',
@@ -465,6 +495,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Sewa Kendaraan Plat Kuning',
@@ -480,6 +511,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Fotokopi/Cetak banner,dll',
@@ -495,6 +527,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Jasa Pentas Seni (Tari, Wayang, dll)',
@@ -510,6 +543,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Jasa Penyelenggara Acara (EO)',
@@ -525,6 +559,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '2%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Pemeliharaan Bangunan (ganti atap, sekat permanen, perbaikan struktur)',
@@ -540,6 +575,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '1,75%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Pemeliharaan Bangunan (ganti atap, sekat permanen, perbaikan struktur)',
@@ -555,6 +591,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '4%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Jasa Konsultasi Konstruksi',
@@ -570,6 +607,7 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '3,5%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
   {
     jenisTransaksi: 'Jasa Konsultasi Konstruksi',
@@ -585,5 +623,6 @@ export const taxData: TaxDataRow[] = [
     tarifPajak: '6%',
     kenaPpn: 'ya',
     kodePajakEbillingPpn: '411211-108',
+    status: 'aktif',
   },
 ];
