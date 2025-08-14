@@ -117,7 +117,7 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
             {rule ? 'Ubah detail aturan pajak di bawah ini.' : 'Isi detail untuk aturan pajak yang baru.'}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="pr-6 -mr-6">
+        <div className="flex-1 overflow-y-auto pr-6 -mr-6">
             <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <h3 className="text-sm font-medium text-muted-foreground mt-4">Kondisi Aturan (Pemicu)</h3>
@@ -207,8 +207,8 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
             {/* The submit button is outside the scrollable area, triggered by the outer form */}
             </form>
             </Form>
-        </ScrollArea>
-        <DialogFooter className="pt-4">
+        </div>
+        <DialogFooter className="pt-4 border-t">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Batal</Button>
             <Button type="submit" onClick={form.handleSubmit(onSubmit)}>Simpan</Button>
         </DialogFooter>
