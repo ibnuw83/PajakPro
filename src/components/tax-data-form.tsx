@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -32,6 +32,8 @@ import {
 import { type TaxDataRow } from '@/lib/types';
 import { taxRuleSchema } from '@/lib/schema';
 import { ScrollArea } from './ui/scroll-area';
+import { getTaxData } from '@/data/tax-data';
+
 
 interface TaxDataFormProps {
     isOpen: boolean;
@@ -51,6 +53,8 @@ const allOptions = {
 };
 
 export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormProps) {
+  const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
+  
   const form = useForm<z.infer<typeof taxRuleSchema>>({
     resolver: zodResolver(taxRuleSchema),
     defaultValues: rule || {
@@ -72,6 +76,11 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
   });
 
   useEffect(() => {
+    // Fetch unique transaction types
+    const taxData = getTaxData();
+    const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
+    setTransactionTypes(uniqueTypes);
+
     form.reset(rule || {
         jenisTransaksi: '',
         wp: 'Orang Pribadi',
@@ -110,9 +119,30 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
             </DialogHeader>
             <ScrollArea className="max-h-[60vh] p-1">
                 <div className="space-y-4 p-4">
-                    <FormField control={form.control} name="jenisTransaksi" render={({ field }) => (
-                        <FormItem><FormLabel>Jenis Transaksi</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
+                    <FormField
+                        control={form.control}
+                        name="jenisTransaksi"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Jenis Transaksi</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Pilih jenis transaksi..." />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                {transactionTypes.map((type) => (
+                                    <SelectItem key={type} value={type}>
+                                    {type}
+                                    </SelectItem>
+                                ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <FormField control={form.control} name="wp" render={({ field }) => (
                         <FormItem><FormLabel>Wajib Pajak (WP)</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{allOptions.wp.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                     )} />
