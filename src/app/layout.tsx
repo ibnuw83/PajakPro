@@ -6,10 +6,31 @@ import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
+const APP_NAME = "PajakPro";
+const APP_DESCRIPTION = "Asisten Pajak Cerdas Anda";
+
 export const metadata: Metadata = {
-  title: 'PajakPro',
-  description: 'Asisten Pajak Cerdas Anda',
+  applicationName: APP_NAME,
+  title: {
+    default: APP_NAME,
+    template: `%s - ${APP_NAME}`,
+  },
+  description: APP_DESCRIPTION,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_NAME,
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  icons: {
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
+  },
 };
+
 
 export default function RootLayout({
   children,
