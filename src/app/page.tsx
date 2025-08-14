@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { type z } from 'zod';
-import { Calculator } from 'lucide-react';
+import { Calculator, LogIn } from 'lucide-react';
 
 import { type formSchema } from '@/lib/schema';
 import { taxData } from '@/data/tax-data';
@@ -13,6 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import PajakProForm from '@/components/pajak-pro-form';
 import PajakProResults from '@/components/pajak-pro-results';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function Home() {
   const [results, setResults] = useState<CalculationResult | null>(null);
@@ -45,16 +47,24 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="p-4 border-b bg-card shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center gap-3">
-           <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-             <Calculator className="h-6 w-6" />
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+           <div className="flex items-center gap-3">
+             <div className="bg-primary text-primary-foreground p-2 rounded-lg">
+               <Calculator className="h-6 w-6" />
+             </div>
+             <div>
+              <h1 className="text-2xl font-bold font-headline text-primary">
+                PajakPro
+              </h1>
+              <p className="text-sm text-muted-foreground">Asisten Pajak Cerdas Anda</p>
+             </div>
            </div>
-           <div>
-            <h1 className="text-2xl font-bold font-headline text-primary">
-              PajakPro
-            </h1>
-            <p className="text-sm text-muted-foreground">Asisten Pajak Cerdas Anda</p>
-           </div>
+           <Button asChild variant="outline">
+              <Link href="/login">
+                <LogIn className="mr-2 h-4 w-4" />
+                Login Admin
+              </Link>
+           </Button>
         </div>
       </header>
       <main className="flex-1 p-4 md:p-8">
