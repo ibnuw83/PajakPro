@@ -146,8 +146,8 @@ export default function Home() {
            </div>
         </div>
       </header>
-      <main className="flex-1 p-4 md:p-8 overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 max-w-7xl mx-auto h-full">
+      <main className="flex-1 p-4 md:p-6 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 max-w-7xl mx-auto h-full">
           <Card className="lg:col-span-2 h-full bg-card flex flex-col">
             <CardHeader>
               <CardTitle>Kalkulator Pajak</CardTitle>
