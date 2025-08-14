@@ -1,6 +1,10 @@
 'use client';
 
-import { FileText, Percent, Receipt } from 'lucide-react';
+import { useRef } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { FileText, Percent, Receipt, Download, Loader2 } from 'lucide-react';
+
 import { type CalculationResult } from '@/lib/types';
 import {
   Card,
@@ -11,6 +15,8 @@ import {
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
+import { Button } from './ui/button';
+import React from 'react';
 
 interface PajakProResultsProps {
   results: CalculationResult | null;
@@ -63,6 +69,33 @@ const LoadingSkeleton = () => (
 
 
 export default function PajakProResults({ results, isLoading }: PajakProResultsProps) {
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = React.useState(false);
+
+  const handleDownloadPdf = () => {
+    const input = resultsRef.current;
+    if (!input) return;
+    setIsDownloading(true);
+
+    html2canvas(input, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const ratio = canvasWidth / canvasHeight;
+        const width = pdfWidth - 20; // with margin
+        const height = width / ratio;
+
+        let position = 10; // top margin
+        
+        pdf.addImage(imgData, 'PNG', 10, position, width, height);
+        pdf.save('hasil-perhitungan-pajak.pdf');
+        setIsDownloading(false);
+    });
+  };
+
   if (isLoading) {
     return <LoadingSkeleton />;
   }
@@ -82,54 +115,67 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
   const { matchedRule, nilaiTransaksi, dpp, pph, ppn, totalBayar, totalPajak } = results;
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-                <Percent className="h-5 w-5"/>
-            </div>
-            <div>
-                <CardTitle>Parameter Pajak</CardTitle>
-                <CardDescription>Aturan pajak yang diterapkan</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-2">
-            <ResultRow label="Jenis Pajak" value={matchedRule.jenisPajak} />
-            <ResultRow label="Kode Pajak PPh" value={matchedRule.kodePajakEbillingPPh} />
-            <ResultRow label="Tarif PPh" value={matchedRule.tarifPajak} />
-            <ResultRow label="DPP Rasio" value={matchedRule.dppRasio} />
-            <ResultRow label="Kena PPN" value={matchedRule.kenaPpn?.toUpperCase()} />
-            <ResultRow label="Kode Pajak PPN" value={matchedRule.kodePajakEbillingPpn} />
-        </CardContent>
-      </Card>
+    <div>
+        <div ref={resultsRef} className="space-y-6 bg-background p-1">
+            <Card>
+                <CardHeader>
+                <div className="flex items-center gap-3">
+                    <div className="bg-primary text-primary-foreground p-2 rounded-lg">
+                        <Percent className="h-5 w-5"/>
+                    </div>
+                    <div>
+                        <CardTitle>Parameter Pajak</CardTitle>
+                        <CardDescription>Aturan pajak yang diterapkan</CardDescription>
+                    </div>
+                </div>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                    <ResultRow label="Jenis Pajak" value={matchedRule.jenisPajak} />
+                    <ResultRow label="Kode Pajak PPh" value={matchedRule.kodePajakEbillingPPh} />
+                    <ResultRow label="Tarif PPh" value={matchedRule.tarifPajak} />
+                    <ResultRow label="DPP Rasio" value={matchedRule.dppRasio} />
+                    <ResultRow label="Kena PPN" value={matchedRule.kenaPpn?.toUpperCase()} />
+                    <ResultRow label="Kode Pajak PPN" value={matchedRule.kodePajakEbillingPpn} />
+                </CardContent>
+            </Card>
 
-       <Card>
-        <CardHeader>
-            <div className="flex items-center gap-3">
-                 <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-                    <Receipt className="h-5 w-5"/>
-                </div>
-                <div>
-                    <CardTitle>Perhitungan Pajak</CardTitle>
-                    <CardDescription>Rincian perhitungan PPh dan PPN</CardDescription>
-                </div>
-            </div>
-        </CardHeader>
-        <CardContent className="space-y-2">
-            <ResultRow label="Nilai Transaksi (Bruto)" value={formatCurrency(nilaiTransaksi)} />
-            <ResultRow label="Dasar Pengenaan Pajak (DPP)" value={formatCurrency(dpp)} />
-            <ResultRow label="Potongan PPh" value={formatCurrency(pph)} />
-            <ResultRow label="Potongan PPN (11%)" value={formatCurrency(ppn)} />
-             <ResultRow label="Total Pajak (PPh + PPN)" value={formatCurrency(totalPajak)} />
-            <Separator className="my-3"/>
-            <div className="flex justify-between items-center text-lg">
-                <p className="font-semibold">Total yang harus dibayarkan</p>
-                <p className="font-bold text-primary">{formatCurrency(totalBayar)}</p>
-            </div>
-        </CardContent>
-      </Card>
+            <Card>
+                <CardHeader>
+                    <div className="flex items-center gap-3">
+                        <div className="bg-primary text-primary-foreground p-2 rounded-lg">
+                            <Receipt className="h-5 w-5"/>
+                        </div>
+                        <div>
+                            <CardTitle>Perhitungan Pajak</CardTitle>
+                            <CardDescription>Rincian perhitungan PPh dan PPN</CardDescription>
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                    <ResultRow label="Nilai Transaksi (Bruto)" value={formatCurrency(nilaiTransaksi)} />
+                    <ResultRow label="Dasar Pengenaan Pajak (DPP)" value={formatCurrency(dpp)} />
+                    <ResultRow label="Potongan PPh" value={formatCurrency(pph)} />
+                    <ResultRow label="Potongan PPN (11%)" value={formatCurrency(ppn)} />
+                    <ResultRow label="Total Pajak (PPh + PPN)" value={formatCurrency(totalPajak)} />
+                    <Separator className="my-3"/>
+                    <div className="flex justify-between items-center text-lg">
+                        <p className="font-semibold">Total yang harus dibayarkan</p>
+                        <p className="font-bold text-primary">{formatCurrency(totalBayar)}</p>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+
+        <div className="mt-6 flex justify-end">
+            <Button onClick={handleDownloadPdf} disabled={isDownloading}>
+                {isDownloading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                    <Download className="mr-2 h-4 w-4" />
+                )}
+                Unduh PDF
+            </Button>
+        </div>
     </div>
   );
 }
