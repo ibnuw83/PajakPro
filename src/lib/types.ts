@@ -21,5 +21,4 @@ export interface CalculationResult {
   pph: number;
   ppn: number;
   totalBayar: number;
-  aiGuidance: string;
 }

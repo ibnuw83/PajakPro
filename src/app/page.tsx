@@ -37,10 +37,7 @@ export default function Home() {
     
     const calculatedTaxes = calculateTaxes(values.nilaiTransaksi, matchedRule);
 
-    setResults({
-      ...calculatedTaxes,
-      aiGuidance: 'Perhitungan selesai.', // Placeholder since AI is removed
-    });
+    setResults(calculatedTaxes);
     
     setIsLoading(false);
   };
