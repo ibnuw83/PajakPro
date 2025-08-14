@@ -1,22 +1,71 @@
 'use client'
 
 import { useState } from 'react';
-import { getTaxData } from '@/data/tax-data';
+import { getTaxData, updateTaxData, initialTaxData } from '@/data/tax-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, MoreHorizontal } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { TransactionTypeForm } from '@/components/transaction-type-form';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 
 export default function TransactionTypesPage() {
-    const [transactionTypes, setTransactionTypes] = useState<string[]>([...new Set(getTaxData().map(d => d.jenisTransaksi))]);
+    const [transactionTypes, setTransactionTypes] = useState<string[]>([...new Set(initialTaxData.map(d => d.jenisTransaksi))]);
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
+    const [originalType, setOriginalType] = useState<string | undefined>(undefined);
+
 
     const handleAdd = () => {
-        // For now, we'll just log to the console.
-        // A dialog or form would be needed to add a new one.
-        console.log("Add new transaction type clicked");
-        alert("Fungsionalitas 'Tambah Jenis Transaksi' belum diimplementasikan.");
+        setSelectedType(undefined);
+        setOriginalType(undefined);
+        setIsFormOpen(true);
     }
+
+    const handleEdit = (type: string) => {
+        setSelectedType(type);
+        setOriginalType(type);
+        setIsFormOpen(true);
+    }
+
+    const handleDelete = (typeToDelete: string) => {
+        if (confirm(`Apakah Anda yakin ingin menghapus "${typeToDelete}"? Aturan pajak terkait akan dihapus.`)) {
+            const currentTaxData = getTaxData();
+            const updatedTaxData = currentTaxData.filter(rule => rule.jenisTransaksi !== typeToDelete);
+            updateTaxData(updatedTaxData);
+            setTransactionTypes(current => current.filter(t => t !== typeToDelete));
+        }
+    }
+
+    const handleSave = (newTypeName: string) => {
+        const currentTaxData = getTaxData();
+
+        if (originalType) { // Editing existing type
+            const updatedTaxData = currentTaxData.map(rule => 
+                rule.jenisTransaksi === originalType ? { ...rule, jenisTransaksi: newTypeName } : rule
+            );
+            updateTaxData(updatedTaxData);
+            setTransactionTypes(current => current.map(t => t === originalType ? newTypeName : t));
+        } else { // Adding new type
+            // To add a new transaction type, we should ideally create a default tax rule for it.
+            // For now, we will just add it to the list. A more complete implementation would guide the user to create a rule.
+            setTransactionTypes(current => [newTypeName, ...current]);
+        }
+        setIsFormOpen(false);
+    };
+
 
     return (
         <div>
@@ -36,18 +85,64 @@ export default function TransactionTypesPage() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>Nama Jenis Transaksi</TableHead>
+                          <TableHead className="text-right">Aksi</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {transactionTypes.map((type, index) => (
                           <TableRow key={index}>
                             <TableCell className="font-medium">{type}</TableCell>
+                             <TableCell className="text-right">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" className="h-8 w-8 p-0">
+                                        <span className="sr-only">Buka menu</span>
+                                        <MoreHorizontal className="h-4 w-4" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                        <DropdownMenuItem onClick={() => handleEdit(type)}>Edit</DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                         <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                               <DropdownMenuItem
+                                                    onSelect={(e) => e.preventDefault()}
+                                                    className="text-destructive focus:text-destructive focus:bg-destructive/10"
+                                                >
+                                                    Hapus
+                                                </DropdownMenuItem>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Tindakan ini tidak dapat dibatalkan. Ini akan menghapus jenis transaksi dan semua aturan pajak yang terkait.
+                                                </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                <AlertDialogCancel>Batal</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => handleDelete(type)}>Hapus</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
                 </CardContent>
             </Card>
+
+            <TransactionTypeForm
+                isOpen={isFormOpen}
+                onOpenChange={setIsFormOpen}
+                onSave={handleSave}
+                transactionType={selectedType}
+            />
+
         </div>
     )
 }
