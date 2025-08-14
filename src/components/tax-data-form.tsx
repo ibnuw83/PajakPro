@@ -103,7 +103,7 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
 
   const onSubmit = (values: z.infer<typeof taxRuleSchema>) => {
     const processedValues = Object.fromEntries(
-        Object.entries(values).map(([key, value]) => [key, value === 'Tidak ada' ? null : value])
+        Object.entries(values).map(([key, value]) => [key, value === 'Tidak ada' || value === '' ? null : value])
     ) as TaxDataRow;
     onSave(processedValues);
   };
