@@ -270,7 +270,7 @@ export const initialTaxData: TaxDataRow[] = [
     jenisPajak: 'PPh 23',
     kodePajakEbillingPPh: '411124-104', // Adjusted
     dppRasio: '100/110',
-    ptkp: '> 2000000',
+    ptkp: null,
     tarifPajak: '2%',
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
