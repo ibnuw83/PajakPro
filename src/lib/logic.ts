@@ -45,7 +45,9 @@ export function calculateTaxes(nilaiTransaksi: number, rule: TaxDataRow) {
     let dpp = 0;
     if (rule.dppRasio) {
         const [pembilang, penyebut] = rule.dppRasio.split('/').map(Number);
-        dpp = nilaiTransaksi * (pembilang / penyebut);
+        if (penyebut !== 0) {
+            dpp = nilaiTransaksi * (pembilang / penyebut);
+        }
     }
 
     let pph = 0;
@@ -54,12 +56,11 @@ export function calculateTaxes(nilaiTransaksi: number, rule: TaxDataRow) {
         pph = dpp * tarif;
     }
 
-    const ppn = rule.kenaPpn === 'ya' ? nilaiTransaksi * 0.11 : 0;
-    const totalBayar = nilaiTransaksi + (rule.kenaPpn === 'ya' ? 0 : ppn); // PPN is included in transaction value if applicable for DPP calc, so don't add again unless specified otherwise. Let's assume for simplicity it is added to total.
+    const ppn = rule.kenaPpn === 'ya' ? dpp * 0.11 : 0;
     
-    // A more common interpretation: total = transaction + ppn
-    const betterTotalBayar = nilaiTransaksi + ppn;
-
+    // totalBayar is the net amount received by the provider/vendor
+    const totalBayar = nilaiTransaksi - pph;
+    const totalPajak = pph + ppn;
 
     return {
         matchedRule: rule,
@@ -67,6 +68,7 @@ export function calculateTaxes(nilaiTransaksi: number, rule: TaxDataRow) {
         dpp,
         pph,
         ppn,
-        totalBayar: betterTotalBayar,
+        totalPajak,
+        totalBayar,
     }
 }

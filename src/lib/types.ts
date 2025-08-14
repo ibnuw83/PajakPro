@@ -21,5 +21,6 @@ export interface CalculationResult {
   dpp: number;
   pph: number;
   ppn: number;
+  totalPajak: number;
   totalBayar: number;
 }

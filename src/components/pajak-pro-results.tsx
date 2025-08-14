@@ -79,7 +79,7 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
     );
   }
 
-  const { matchedRule, nilaiTransaksi, dpp, pph, ppn, totalBayar } = results;
+  const { matchedRule, nilaiTransaksi, dpp, pph, ppn, totalBayar, totalPajak } = results;
 
   return (
     <div className="space-y-6">
@@ -122,9 +122,10 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
             <ResultRow label="Dasar Pengenaan Pajak (DPP)" value={formatCurrency(dpp)} />
             <ResultRow label="Potongan PPh" value={formatCurrency(pph)} />
             <ResultRow label="Potongan PPN (11%)" value={formatCurrency(ppn)} />
+             <ResultRow label="Total Pajak (PPh + PPN)" value={formatCurrency(totalPajak)} />
             <Separator className="my-3"/>
             <div className="flex justify-between items-center text-lg">
-                <p className="font-semibold">Total Tagihan</p>
+                <p className="font-semibold">Total yang harus dibayarkan</p>
                 <p className="font-bold text-primary">{formatCurrency(totalBayar)}</p>
             </div>
         </CardContent>
