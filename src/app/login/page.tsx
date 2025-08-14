@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Calculator, LogIn } from 'lucide-react';
 import { getSettings, type AppSettings } from '@/data/settings';
+import Image from 'next/image';
 
 
 export default function LoginPage() {
@@ -51,9 +52,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
        <div className="absolute top-4 left-4 flex items-center gap-3">
-         <div className="rounded-lg">
-          {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" className="h-8 w-8 object-contain" /> : <Calculator className="h-8 w-8 text-primary" />}
-         </div>
+         {settings.logoUrl ? <Image src={settings.logoUrl} alt="Logo" width={32} height={32} className="h-8 w-8 object-contain" /> : <Calculator className="h-8 w-8 text-primary" />}
          <div>
            <h1 className="text-2xl font-bold font-headline text-primary">{settings.title}</h1>
            <p className="text-sm text-muted-foreground">{settings.description}</p>

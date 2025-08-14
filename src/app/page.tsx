@@ -21,6 +21,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import Image from 'next/image';
 
 
 export default function Home() {
@@ -66,9 +67,7 @@ export default function Home() {
       <header className="p-4 border-b bg-card shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
            <div className="flex items-center gap-3">
-             <div className="rounded-lg">
-               {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" className="h-8 w-8 object-contain" /> : <Calculator className="h-8 w-8 text-primary" />}
-             </div>
+             {settings.logoUrl ? <Image src={settings.logoUrl} alt="Logo" width={32} height={32} className="h-8 w-8 object-contain" /> : <Calculator className="h-8 w-8 text-primary" />}
              <div>
               <h1 className="text-2xl font-bold font-headline text-primary">
                 {settings.title}

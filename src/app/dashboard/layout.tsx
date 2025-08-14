@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -17,6 +17,8 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { getSettings, type AppSettings } from '@/data/settings';
+import Image from 'next/image';
 
 export default function DashboardLayout({
   children,
@@ -25,6 +27,11 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [settings, setSettings] = useState<AppSettings | null>(null);
+
+  useEffect(() => {
+    setSettings(getSettings());
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -44,8 +51,12 @@ export default function DashboardLayout({
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
         <div className="flex flex-col gap-2 p-4">
             <Link href="/" className="flex items-center gap-3 rounded-lg px-3 py-2 text-primary transition-all hover:text-primary">
-                <Calculator className="h-6 w-6" />
-                <span className="text-xl font-bold">PajakPro</span>
+                {settings?.logoUrl ? (
+                    <Image src={settings.logoUrl} alt="Logo" width={24} height={24} className="h-6 w-6 object-contain" />
+                ) : (
+                    <Calculator className="h-6 w-6" />
+                )}
+                <span className="text-xl font-bold">{settings?.title || 'PajakPro'}</span>
             </Link>
         </div>
         <nav className="flex flex-col gap-1 p-4 pt-0">
@@ -85,8 +96,12 @@ export default function DashboardLayout({
                   href="/"
                   className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                 >
-                  <Calculator className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">PajakPro</span>
+                  {settings?.logoUrl ? (
+                      <Image src={settings.logoUrl} alt="Logo" width={20} height={20} className="h-5 w-5 object-contain transition-all group-hover:scale-110" />
+                  ) : (
+                      <Calculator className="h-5 w-5 transition-all group-hover:scale-110" />
+                  )}
+                  <span className="sr-only">{settings?.title || 'PajakPro'}</span>
                 </Link>
                 {navItems.map((item) => (
                     <Link
