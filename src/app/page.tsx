@@ -8,7 +8,6 @@ import { type formSchema } from '@/lib/schema';
 import { taxData } from '@/data/tax-data';
 import { findMatchingRule, calculateTaxes } from '@/lib/logic';
 import { type CalculationResult } from '@/lib/types';
-import { getAIGuidance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 
 import PajakProForm from '@/components/pajak-pro-form';
@@ -38,22 +37,9 @@ export default function Home() {
     
     const calculatedTaxes = calculateTaxes(values.nilaiTransaksi, matchedRule);
 
-    const { success, guidance, error } = await getAIGuidance({
-      ...values,
-      ...matchedRule,
-    });
-    
-    if (!success) {
-        toast({
-            variant: 'destructive',
-            title: 'Gagal Mendapatkan Saran AI',
-            description: error,
-        });
-    }
-
     setResults({
       ...calculatedTaxes,
-      aiGuidance: guidance || 'Tidak ada saran yang tersedia.',
+      aiGuidance: 'Perhitungan selesai.', // Placeholder since AI is removed
     });
     
     setIsLoading(false);

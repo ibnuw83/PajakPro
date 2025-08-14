@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, Lightbulb, Percent, Receipt } from 'lucide-react';
+import { FileText, Percent, Receipt } from 'lucide-react';
 import { type CalculationResult } from '@/lib/types';
 import {
   Card,
@@ -58,17 +58,6 @@ const LoadingSkeleton = () => (
                 <Skeleton className="h-8 w-full mt-2" />
             </CardContent>
         </Card>
-         <Card>
-            <CardHeader>
-                <Skeleton className="h-6 w-1/2" />
-                 <Skeleton className="h-4 w-3/4" />
-            </CardHeader>
-            <CardContent className="space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-5/6" />
-            </CardContent>
-        </Card>
     </div>
 );
 
@@ -84,13 +73,13 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
         <FileText className="h-12 w-12 text-muted-foreground mb-4" />
         <CardTitle>Hasil Perhitungan Akan Muncul di Sini</CardTitle>
         <CardDescription className="mt-2">
-          Isi formulir di sebelah kiri dan klik tombol hitung untuk melihat rincian pajak dan saran dari AI.
+          Isi formulir di sebelah kiri dan klik tombol hitung untuk melihat rincian pajak.
         </CardDescription>
       </Card>
     );
   }
 
-  const { matchedRule, nilaiTransaksi, dpp, pph, ppn, totalBayar, aiGuidance } = results;
+  const { matchedRule, nilaiTransaksi, dpp, pph, ppn, totalBayar } = results;
 
   return (
     <div className="space-y-6">
@@ -138,23 +127,6 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
                 <p className="font-semibold">Total Tagihan</p>
                 <p className="font-bold text-primary">{formatCurrency(totalBayar)}</p>
             </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="bg-accent text-accent-foreground p-2 rounded-lg">
-                <Lightbulb className="h-5 w-5"/>
-            </div>
-            <div>
-                 <CardTitle>Saran AI</CardTitle>
-                 <CardDescription>Penjelasan dan panduan dari asisten AI</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="prose prose-sm max-w-none text-foreground text-sm" dangerouslySetInnerHTML={{ __html: aiGuidance.replace(/\n/g, '<br />') }} />
         </CardContent>
       </Card>
     </div>

@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type z } from 'zod';
-import { Loader2, WandSparkles } from 'lucide-react';
+import { Loader2, Calculator } from 'lucide-react';
 
 import { taxData } from '@/data/tax-data';
 import { formSchema } from '@/lib/schema';
@@ -203,13 +203,13 @@ export default function PajakProForm({ onCalculate, isLoading }: PajakProFormPro
           )}
         />
 
-        <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" disabled={isLoading}>
+        <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isLoading}>
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            <WandSparkles className="mr-2 h-4 w-4" />
+            <Calculator className="mr-2 h-4 w-4" />
           )}
-          Hitung & Beri Saran
+          Hitung Pajak
         </Button>
       </form>
     </Form>
