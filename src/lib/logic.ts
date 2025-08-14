@@ -21,7 +21,7 @@ function checkPtkp(ptkp: string | null, value: number) {
 export function findMatchingRule(values: z.infer<typeof formSchema>, data: TaxDataRow[]): TaxDataRow | undefined {
     return data.find(rule => {
         // Only match active rules
-        if (rule.status === 'non-aktif') {
+        if (rule.status !== 'aktif') {
             return false;
         }
 
