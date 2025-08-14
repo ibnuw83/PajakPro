@@ -65,7 +65,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background text-foreground">
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="p-4 border-b bg-card shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
            <div className="flex items-center gap-3">
@@ -146,24 +146,22 @@ export default function Home() {
            </div>
         </div>
       </header>
-      <main className="flex-1 p-4 md:p-6 overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 max-w-7xl mx-auto h-full">
-          <Card className="lg:col-span-2 h-full bg-card flex flex-col">
+      <main className="flex-1 p-4 md:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+          <Card className="lg:col-span-2 bg-card">
             <CardHeader>
               <CardTitle>Kalkulator Pajak</CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 overflow-y-auto">
+            <CardContent>
               <PajakProForm onCalculate={handleCalculate} />
             </CardContent>
           </Card>
-          <div className="lg:col-span-3 h-full flex flex-col">
-            <div className="flex-1 overflow-y-auto">
-                <PajakProResults results={results} formValues={formValues} isLoading={isLoading} />
-            </div>
+          <div className="lg:col-span-3">
+              <PajakProResults results={results} formValues={formValues} isLoading={isLoading} />
           </div>
         </div>
       </main>
-      <footer className="text-center p-4 text-sm text-muted-foreground border-t">
+      <footer className="text-center p-4 text-sm text-muted-foreground border-t mt-auto">
         {settings.footerText.replace('{year}', new Date().getFullYear().toString())}
       </footer>
     </div>
