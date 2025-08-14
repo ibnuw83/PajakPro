@@ -108,7 +108,7 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
         <FileText className="h-12 w-12 text-muted-foreground mb-4" />
         <CardTitle>Hasil Perhitungan Akan Muncul di Sini</CardTitle>
         <CardDescription className="mt-2">
-          Isi formulir di sebelah kiri dan klik tombol hitung untuk melihat rincian pajak.
+          Isi formulir di sebelah kiri untuk melihat rincian pajak secara otomatis.
         </CardDescription>
       </Card>
     );
@@ -119,10 +119,10 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
   return (
     <div>
         <div ref={resultsRef} className="space-y-6 bg-background p-1">
-            <Card>
+            <Card className="bg-blue-50 dark:bg-blue-900/20">
                 <CardHeader>
                 <div className="flex items-center gap-3">
-                    <div className="bg-primary text-primary-foreground p-2 rounded-lg">
+                    <div className="bg-blue-600 text-white p-2 rounded-lg">
                         <Percent className="h-5 w-5"/>
                     </div>
                     <div>
@@ -141,10 +141,10 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
                 </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-green-50 dark:bg-green-900/20">
                 <CardHeader>
                     <div className="flex items-center gap-3">
-                        <div className="bg-primary text-primary-foreground p-2 rounded-lg">
+                        <div className="bg-green-600 text-white p-2 rounded-lg">
                             <Receipt className="h-5 w-5"/>
                         </div>
                         <div>
