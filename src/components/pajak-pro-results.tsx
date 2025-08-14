@@ -29,7 +29,6 @@ const formatCurrency = (value: number) => {
     currency: 'IDR',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-    useGrouping: false,
   }).format(value);
 };
 
