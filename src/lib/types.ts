@@ -24,3 +24,16 @@ export interface CalculationResult {
   totalPajak: number;
   totalBayar: number;
 }
+
+export type InfoContentSection = {
+  trigger: string;
+  content: string;
+  type: 'list' | 'paragraph' | 'table';
+};
+
+export type InfoContentItem = {
+  id: string;
+  title: string;
+  description: string;
+  sections: InfoContentSection[];
+};

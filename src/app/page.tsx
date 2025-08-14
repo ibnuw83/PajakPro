@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { type z } from 'zod';
 import { Calculator, LogIn, Info } from 'lucide-react';
 
 import { type formSchema } from '@/lib/schema';
 import { getTaxData } from '@/data/tax-data';
+import { getInfoContent } from '@/data/info-content';
 import { findMatchingRule, calculateTaxes } from '@/lib/logic';
-import { type CalculationResult } from '@/lib/types';
+import { type CalculationResult, type InfoContentItem } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
 import PajakProForm from '@/components/pajak-pro-form';
@@ -24,7 +25,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 export default function Home() {
   const [results, setResults] = useState<CalculationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [infoContent, setInfoContent] = useState<InfoContentItem[]>([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setInfoContent(getInfoContent());
+  }, []);
 
   const handleCalculate = (values: z.infer<typeof formSchema> | null) => {
       if (!values) {
@@ -67,96 +73,57 @@ export default function Home() {
               <DropdownMenuTrigger asChild>
                  <Button variant="outline" size="icon">
                     <Info className="h-4 w-4" />
-                    <span className="sr-only">Informasi PPh 21</span>
+                    <span className="sr-only">Informasi Pajak</span>
                   </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-screen max-w-2xl">
-                 <DropdownMenuLabel>Informasi PPh 21</DropdownMenuLabel>
+                 <DropdownMenuLabel>Informasi Pajak</DropdownMenuLabel>
                  <DropdownMenuSeparator />
                  <ScrollArea className="h-[70vh]">
                   <Accordion type="single" collapsible className="w-full p-4">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger>Dasar Hukum</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="list-disc pl-5 space-y-2 text-sm">
-                          <li>UU No. 7/1983 s.t.d.t.d UU No. 7 TAHUN 2021 (UU HPP)</li>
-                          <li>PP No. 58 TAHUN 2023</li>
-                          <li>PERATURAN MENTERI KEUANGAN REPUBLIK INDONESIA NOMOR 168 TAHUN 2023</li>
-                          <li>PERATURAN DIREKTUR JENDERAL PAJAK NOMOR PER-2/PJ/2024</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-2">
-                      <AccordionTrigger>Objek Pajak</AccordionTrigger>
-                      <AccordionContent>
-                         <p className="text-sm">Penghasilan yang diterima oleh wajib pajak orang pribadi sehubungan dengan pekerjaan, jasa, atau kegiatan, termasuk:</p>
-                        <ul className="list-disc pl-5 space-y-2 text-sm mt-2">
-                            <li>Gaji, upah, tunjangan, dan pembayaran lain sejenisnya</li>
-                            <li>Honorarium, uang saku, dan imbalan sejenisnya</li>
-                            <li>Hadiah atau penghargaan</li>
-                            <li>Dan lain-lain</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                     <AccordionItem value="item-3">
-                      <AccordionTrigger>Penghasilan Tidak Kena Pajak (PTKP)</AccordionTrigger>
-                      <AccordionContent>
-                        <p className="text-sm mb-2">Besaran PTKP per tahun:</p>
-                         <Table>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell>Wajib Pajak Orang Pribadi</TableCell>
-                              <TableCell>Rp 54.000.000</TableCell>
-                            </TableRow>
-                             <TableRow>
-                              <TableCell>Tambahan untuk Wajib Pajak kawin</TableCell>
-                              <TableCell>Rp 4.500.000</TableCell>
-                            </TableRow>
-                             <TableRow>
-                              <TableCell>Tambahan untuk setiap tanggungan (maks. 3)</TableCell>
-                              <TableCell>Rp 4.500.000</TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </AccordionContent>
-                    </AccordionItem>
-                     <AccordionItem value="item-4">
-                      <AccordionTrigger>Tarif Pajak (Pasal 17)</AccordionTrigger>
-                      <AccordionContent>
-                        <p className="text-sm mb-2">Tarif progresif berdasarkan penghasilan kena pajak:</p>
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Lapisan Penghasilan Kena Pajak</TableHead>
-                              <TableHead>Tarif</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell>sampai dengan Rp60.000.000</TableCell>
-                              <TableCell>5%</TableCell>
-                            </TableRow>
-                             <TableRow>
-                              <TableCell>di atas Rp60.000.000 s.d. Rp250.000.000</TableCell>
-                              <TableCell>15%</TableCell>
-                            </TableRow>
-                             <TableRow>
-                              <TableCell>di atas Rp250.000.000 s.d. Rp500.000.000</TableCell>
-                              <TableCell>25%</TableCell>
-                            </TableRow>
-                             <TableRow>
-                              <TableCell>di atas Rp500.000.000 s.d. Rp5.000.000.000</TableCell>
-                              <TableCell>30%</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>di atas Rp5.000.000.000</TableCell>
-                              <TableCell>35%</TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                         <p className="text-sm mt-4 mb-2">Bagi Wajib Pajak yang tidak memiliki NPWP, dikenakan tarif 20% lebih tinggi.</p>
-                      </AccordionContent>
-                    </AccordionItem>
+                    {infoContent.map(item => (
+                       <AccordionItem value={item.id} key={item.id}>
+                          <AccordionTrigger>{item.title}</AccordionTrigger>
+                          <AccordionContent>
+                              <Accordion type="single" collapsible className="w-full">
+                                {item.sections.map((section, index) => (
+                                    <AccordionItem value={`section-${index}`} key={index}>
+                                        <AccordionTrigger>{section.trigger}</AccordionTrigger>
+                                        <AccordionContent>
+                                            {section.type === 'paragraph' && (
+                                                <div className="text-sm space-y-2">
+                                                    {section.content.split('|').map((paragraph, pIndex) => (
+                                                        <p key={pIndex}>{paragraph.startsWith('-') ? <ul className="list-disc pl-5"><li className='list-item'>{paragraph.substring(1)}</li></ul> : paragraph}</p>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            {section.type === 'list' && (
+                                                <ul className="list-disc pl-5 space-y-2 text-sm">
+                                                    {section.content.split(';').map((listItem, lIndex) => (
+                                                        <li key={lIndex}>{listItem}</li>
+                                                    ))}
+                                                </ul>
+                                            )}
+                                            {section.type === 'table' && (
+                                                <Table>
+                                                    <TableBody>
+                                                        {section.content.split('|').map((row, rIndex) => (
+                                                            <TableRow key={rIndex}>
+                                                                {row.split(';').map((cell, cIndex) => (
+                                                                    <TableCell key={cIndex}>{cell}</TableCell>
+                                                                ))}
+                                                            </TableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            )}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                              </Accordion>
+                          </AccordionContent>
+                       </AccordionItem>
+                    ))}
                   </Accordion>
                  </ScrollArea>
               </DropdownMenuContent>
@@ -172,7 +139,7 @@ export default function Home() {
       </header>
       <main className="flex-1 p-4 md:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
-          <Card className="lg:col-span-2 h-fit">
+          <Card className="lg:col-span-2 h-fit bg-card">
             <CardHeader>
               <CardTitle>Kalkulator Pajak</CardTitle>
             </CardHeader>

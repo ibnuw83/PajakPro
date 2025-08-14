@@ -12,6 +12,7 @@ import {
   Table,
   Calculator,
   ClipboardList,
+  BookText,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -34,6 +35,7 @@ export default function DashboardLayout({
     { href: '/dashboard', icon: Home, label: 'Beranda' },
     { href: '/dashboard/tax-data', icon: Table, label: 'Data Pajak' },
     { href: '/dashboard/transaction-types', icon: ClipboardList, label: 'Jenis Transaksi' },
+    { href: '/dashboard/info-content', icon: BookText, label: 'Konten Informasi'},
   ];
 
   return (
