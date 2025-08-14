@@ -1,17 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { initialInfoContent, getInfoContent } from '@/data/info-content';
+import { getInfoContent } from '@/data/info-content';
 import { type InfoContentItem } from '@/lib/types';
 import { Edit } from 'lucide-react';
 
 export default function InfoContentPage() {
     const router = useRouter();
-    const [contentItems, setContentItems] = useState<InfoContentItem[]>(getInfoContent());
+    const [contentItems, setContentItems] = useState<InfoContentItem[]>([]);
+
+    useEffect(() => {
+        setContentItems(getInfoContent());
+    }, []);
 
     const handleEdit = (id: string) => {
         router.push(`/dashboard/info-content/edit/${id}`);

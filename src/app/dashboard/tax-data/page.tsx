@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TaxDataTable } from '@/components/tax-data-table';
-import { initialTaxData } from '@/data/tax-data';
+import { getTaxData, updateTaxData } from '@/data/tax-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
@@ -11,9 +11,18 @@ import { type TaxDataRow } from '@/lib/types';
 
 
 export default function TaxDataPage() {
-    const [data, setData] = useState<TaxDataRow[]>(initialTaxData);
+    const [data, setData] = useState<TaxDataRow[]>([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedRule, setSelectedRule] = useState<TaxDataRow | undefined>(undefined);
+
+    useEffect(() => {
+        setData(getTaxData());
+    }, []);
+
+    const refreshData = () => {
+        const freshData = getTaxData();
+        setData(freshData);
+    }
 
     const handleAdd = () => {
         setSelectedRule(undefined);
@@ -26,23 +35,37 @@ export default function TaxDataPage() {
     }
 
     const handleDelete = (ruleToDelete: TaxDataRow) => {
-        setData(currentData => currentData.filter(rule => rule !== ruleToDelete));
+        const currentData = getTaxData();
+        const updatedData = currentData.filter(rule => 
+            JSON.stringify(rule) !== JSON.stringify(ruleToDelete)
+        );
+        updateTaxData(updatedData);
+        refreshData();
     }
 
     const handleToggleStatus = (ruleToToggle: TaxDataRow) => {
-        setData(currentData => currentData.map(rule => 
-            rule === ruleToToggle 
+        const currentData = getTaxData();
+        const updatedData = currentData.map(rule => 
+            JSON.stringify(rule) === JSON.stringify(ruleToToggle) 
             ? { ...rule, status: rule.status === 'aktif' ? 'non-aktif' : 'aktif' }
             : rule
-        ));
+        );
+        updateTaxData(updatedData);
+        refreshData();
     }
 
     const handleSave = (ruleToSave: TaxDataRow) => {
+        const currentData = getTaxData();
+        let updatedData;
         if (selectedRule) { // Editing existing rule
-            setData(currentData => currentData.map(rule => rule === selectedRule ? ruleToSave : rule));
+            updatedData = currentData.map(rule => 
+                JSON.stringify(rule) === JSON.stringify(selectedRule) ? ruleToSave : rule
+            );
         } else { // Adding new rule
-            setData(currentData => [ruleToSave, ...currentData]);
+            updatedData = [ruleToSave, ...currentData];
         }
+        updateTaxData(updatedData);
+        refreshData();
         setIsFormOpen(false);
     };
 

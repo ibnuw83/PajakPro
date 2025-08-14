@@ -1,6 +1,8 @@
 import { type TaxDataRow } from '@/lib/types';
 
-// Renamed to initialTaxData to reflect its use as a starting point for state
+const TAX_DATA_KEY = 'pajakpro-tax-data';
+
+// Initial data is used only if nothing is in localStorage
 export const initialTaxData: TaxDataRow[] = [
   {
     jenisTransaksi: 'Makan Minum',
@@ -628,40 +630,29 @@ export const initialTaxData: TaxDataRow[] = [
   },
 ];
 
-let taxData = [...initialTaxData];
-
-// Function to get the current tax data
-export const getTaxData = () => {
-  return taxData;
+// Function to get the current tax data from localStorage
+export const getTaxData = (): TaxDataRow[] => {
+  if (typeof window === 'undefined') {
+    return initialTaxData;
+  }
+  try {
+    const storedData = localStorage.getItem(TAX_DATA_KEY);
+    if (storedData) {
+      return JSON.parse(storedData);
+    } else {
+      // If no data in localStorage, set it with initial data
+      localStorage.setItem(TAX_DATA_KEY, JSON.stringify(initialTaxData));
+      return initialTaxData;
+    }
+  } catch (error) {
+    console.error("Failed to parse tax data from localStorage", error);
+    return initialTaxData;
+  }
 };
 
-// Function to update the tax data
+// Function to update the tax data in localStorage
 export const updateTaxData = (newData: TaxDataRow[]) => {
-  taxData = newData;
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(TAX_DATA_KEY, JSON.stringify(newData));
+  }
 };
-
-// Function to add a new tax rule
-export const addTaxRule = (newRule: TaxDataRow) => {
-    taxData.unshift(newRule);
-};
-
-// Function to update an existing tax rule
-export const updateTaxRule = (updatedRule: TaxDataRow, oldRule: TaxDataRow) => {
-    const index = taxData.findIndex(rule => rule === oldRule);
-    if (index !== -1) {
-        taxData[index] = updatedRule;
-    }
-};
-
-// Function to delete a tax rule
-export const deleteTaxRule = (ruleToDelete: TaxDataRow) => {
-    taxData = taxData.filter(rule => rule !== ruleToDelete);
-}
-
-// Function to toggle status
-export const toggleTaxRuleStatus = (ruleToToggle: TaxDataRow) => {
-    const index = taxData.findIndex(rule => rule === ruleToToggle);
-    if (index !== -1) {
-        taxData[index].status = taxData[index].status === 'aktif' ? 'non-aktif' : 'aktif';
-    }
-}

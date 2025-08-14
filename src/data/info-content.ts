@@ -1,5 +1,7 @@
 import { type InfoContentItem } from '@/lib/types';
 
+const INFO_CONTENT_KEY = 'pajakpro-info-content';
+
 export const initialInfoContent: InfoContentItem[] = [
   {
     id: 'pph21',
@@ -60,23 +62,41 @@ export const initialInfoContent: InfoContentItem[] = [
 ];
 
 
-let infoContentData = [...initialInfoContent];
-
-export const getInfoContent = () => {
-  return infoContentData;
+export const getInfoContent = (): InfoContentItem[] => {
+  if (typeof window === 'undefined') {
+      return initialInfoContent;
+  }
+  try {
+      const storedData = localStorage.getItem(INFO_CONTENT_KEY);
+      if (storedData) {
+          return JSON.parse(storedData);
+      } else {
+          localStorage.setItem(INFO_CONTENT_KEY, JSON.stringify(initialInfoContent));
+          return initialInfoContent;
+      }
+  } catch (error) {
+      console.error("Failed to parse info content from localStorage", error);
+      return initialInfoContent;
+  }
 };
+
 
 export const updateInfoContent = (newData: InfoContentItem[]) => {
-  infoContentData = newData;
+   if (typeof window !== 'undefined') {
+      localStorage.setItem(INFO_CONTENT_KEY, JSON.stringify(newData));
+   }
 };
 
-export const getInfoContentById = (id: string) => {
-    return infoContentData.find(item => item.id === id);
+export const getInfoContentById = (id: string): InfoContentItem | undefined => {
+    const data = getInfoContent();
+    return data.find(item => item.id === id);
 }
 
 export const updateInfoContentById = (id: string, updatedItem: InfoContentItem) => {
-    const index = infoContentData.findIndex(item => item.id === id);
+    const data = getInfoContent();
+    const index = data.findIndex(item => item.id === id);
     if (index !== -1) {
-        infoContentData[index] = updatedItem;
+        data[index] = updatedItem;
+        updateInfoContent(data);
     }
 }

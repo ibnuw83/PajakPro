@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react';
-import { getTaxData, updateTaxData, initialTaxData } from '@/data/tax-data';
+import { useState, useEffect } from 'react';
+import { getTaxData, updateTaxData } from '@/data/tax-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, MoreHorizontal } from 'lucide-react';
@@ -17,15 +17,24 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
 
 export default function TransactionTypesPage() {
-    const [transactionTypes, setTransactionTypes] = useState<string[]>([...new Set(initialTaxData.map(d => d.jenisTransaksi))]);
+    const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
     const [originalType, setOriginalType] = useState<string | undefined>(undefined);
+
+    const refreshData = () => {
+        const taxData = getTaxData();
+        const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
+        setTransactionTypes(uniqueTypes);
+    }
+
+    useEffect(() => {
+        refreshData();
+    }, []);
 
 
     const handleAdd = () => {
@@ -41,28 +50,33 @@ export default function TransactionTypesPage() {
     }
 
     const handleDelete = (typeToDelete: string) => {
-        if (confirm(`Apakah Anda yakin ingin menghapus "${typeToDelete}"? Aturan pajak terkait akan dihapus.`)) {
-            const currentTaxData = getTaxData();
-            const updatedTaxData = currentTaxData.filter(rule => rule.jenisTransaksi !== typeToDelete);
-            updateTaxData(updatedTaxData);
-            setTransactionTypes(current => current.filter(t => t !== typeToDelete));
-        }
+        const currentTaxData = getTaxData();
+        const updatedTaxData = currentTaxData.filter(rule => rule.jenisTransaksi !== typeToDelete);
+        updateTaxData(updatedTaxData);
+        refreshData();
     }
 
     const handleSave = (newTypeName: string) => {
         const currentTaxData = getTaxData();
+        let updatedTaxData;
 
-        if (originalType) { // Editing existing type
-            const updatedTaxData = currentTaxData.map(rule => 
+        if (originalType && originalType !== newTypeName) { // Editing existing type
+            updatedTaxData = currentTaxData.map(rule => 
                 rule.jenisTransaksi === originalType ? { ...rule, jenisTransaksi: newTypeName } : rule
             );
-            updateTaxData(updatedTaxData);
-            setTransactionTypes(current => current.map(t => t === originalType ? newTypeName : t));
-        } else { // Adding new type
-            // To add a new transaction type, we should ideally create a default tax rule for it.
-            // For now, we will just add it to the list. A more complete implementation would guide the user to create a rule.
+        } else if (!originalType) { // Adding new type
+            // Just need to refresh the list, no rule is added yet.
+            // The user must add a rule for this new type on the tax data page.
+            updatedTaxData = [...currentTaxData];
+             // A bit of a hack to make sure it appears in the list right away
+            // The proper way would be to create a default rule, but that is more complex.
             setTransactionTypes(current => [newTypeName, ...current]);
+        } else {
+             updatedTaxData = [...currentTaxData];
         }
+
+        updateTaxData(updatedTaxData);
+        refreshData();
         setIsFormOpen(false);
     };
 
