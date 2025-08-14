@@ -82,14 +82,18 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
+        
+        // Add Title
+        pdf.setFontSize(18);
+        pdf.text("Hasil Perhitungan Pajak", pdfWidth / 2, 20, { align: 'center' });
+        
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
         const ratio = canvasWidth / canvasHeight;
         const width = pdfWidth - 20; // with margin
         const height = width / ratio;
 
-        let position = 10; // top margin
+        let position = 30; // top margin after title
         
         pdf.addImage(imgData, 'PNG', 10, position, width, height);
         pdf.save('hasil-perhitungan-pajak.pdf');
