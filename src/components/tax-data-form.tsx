@@ -176,12 +176,12 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
                         <FormItem>
                             <FormLabel>Tarif Pajak</FormLabel>
                             <FormControl>
-                                <>
+                                <div>
                                     <Input {...field} list="tarif-pajak-options" value={field.value || ''} placeholder="Contoh: 2,5%" />
                                     <datalist id="tarif-pajak-options">
                                         {allOptions.tarifPajak.map(o => <option key={o} value={o} />)}
                                     </datalist>
-                                </>
+                                </div>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
