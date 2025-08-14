@@ -41,8 +41,8 @@ export function TaxDataTable({ data, onEdit, onDelete, onToggleStatus }: TaxData
           <TableHead>WP</TableHead>
           <TableHead>Jenis Pajak</TableHead>
           <TableHead>Tarif</TableHead>
-          <TableHead>Status</TableHead>
           <TableHead>Kena PPN</TableHead>
+          <TableHead>Status</TableHead>
           <TableHead className="text-right">Aksi</TableHead>
         </TableRow>
       </TableHeader>
@@ -55,14 +55,14 @@ export function TaxDataTable({ data, onEdit, onDelete, onToggleStatus }: TaxData
               <Badge variant="outline">{row.jenisPajak}</Badge>
             </TableCell>
             <TableCell>{row.tarifPajak}</TableCell>
-             <TableCell>
-              <Badge variant={row.status === 'aktif' ? 'default' : 'secondary'}>
-                {row.status?.toUpperCase() || 'AKTIF'}
-              </Badge>
-            </TableCell>
             <TableCell>
                <Badge variant={row.kenaPpn === 'ya' ? 'default' : 'secondary'}>
                 {row.kenaPpn?.toUpperCase() || 'TIDAK'}
+              </Badge>
+            </TableCell>
+             <TableCell>
+              <Badge variant={row.status === 'aktif' ? 'default' : 'secondary'}>
+                {row.status?.toUpperCase() || 'AKTIF'}
               </Badge>
             </TableCell>
             <TableCell className="text-right">
