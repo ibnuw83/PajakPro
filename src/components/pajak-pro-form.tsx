@@ -30,14 +30,14 @@ import { TaxDataRow } from '@/lib/types';
 
 interface PajakProFormProps {
   onCalculate: (values: z.infer<typeof formSchema> | null) => void;
+  isLoading: boolean;
 }
 
 const placeholder = 'Pilih...';
 
-export default function PajakProForm({ onCalculate }: PajakProFormProps) {
+export default function PajakProForm({ onCalculate, isLoading }: PajakProFormProps) {
   const [taxData, setTaxData] = useState<TaxDataRow[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
+  
   useEffect(() => {
     setTaxData(getTaxData());
   }, []);
@@ -58,15 +58,13 @@ export default function PajakProForm({ onCalculate }: PajakProFormProps) {
 
   const { watch, formState: { isValid } } = form;
   
-  const handleFormChange = useCallback(async (values: unknown) => {
-    setIsLoading(true);
+  const handleFormChange = useCallback(async (values: z.infer<typeof formSchema>) => {
     const isFormValid = await form.trigger();
     if (isFormValid) {
-        onCalculate(values as z.infer<typeof formSchema>);
+        onCalculate(values);
     } else {
         onCalculate(null);
     }
-    setIsLoading(false);
   }, [form, onCalculate]);
 
   useEffect(() => {

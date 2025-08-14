@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Calculator, LogIn } from 'lucide-react';
+import { getSettings, type AppSettings } from '@/data/settings';
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,6 +17,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [settings, setSettings] = useState<AppSettings | null>(null);
+
+  useEffect(() => {
+    setSettings(getSettings());
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,16 +43,20 @@ export default function LoginPage() {
       setIsLoading(false);
     }, 1000);
   };
+  
+  if (!settings) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
        <div className="absolute top-4 left-4 flex items-center gap-3">
          <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-           <Calculator className="h-6 w-6" />
+          {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" className="h-6 w-6" /> : <Calculator className="h-6 w-6" />}
          </div>
          <div>
-           <h1 className="text-2xl font-bold font-headline text-primary">PajakPro</h1>
-           <p className="text-sm text-muted-foreground">Asisten Pajak Cerdas Anda</p>
+           <h1 className="text-2xl font-bold font-headline text-primary">{settings.title}</h1>
+           <p className="text-sm text-muted-foreground">{settings.description}</p>
          </div>
        </div>
       <Card className="w-full max-w-sm">

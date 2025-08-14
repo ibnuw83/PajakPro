@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { type z } from 'zod';
 import { Calculator, LogIn, Info } from 'lucide-react';
 
 import { type formSchema } from '@/lib/schema';
 import { getTaxData } from '@/data/tax-data';
 import { getInfoContent } from '@/data/info-content';
+import { getSettings, type AppSettings } from '@/data/settings';
 import { findMatchingRule, calculateTaxes } from '@/lib/logic';
 import { type CalculationResult, type InfoContentItem } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
@@ -26,19 +27,22 @@ export default function Home() {
   const [results, setResults] = useState<CalculationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [infoContent, setInfoContent] = useState<InfoContentItem[]>([]);
+  const [settings, setSettings] = useState<AppSettings | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     setInfoContent(getInfoContent());
+    setSettings(getSettings());
   }, []);
 
-  const handleCalculate = (values: z.infer<typeof formSchema> | null) => {
+  const handleCalculate = useCallback((values: z.infer<typeof formSchema> | null) => {
+      setIsLoading(true);
       if (!values) {
           setResults(null);
+          setIsLoading(false);
           return;
       }
       
-      setIsLoading(true);
       const taxData = getTaxData();
       const matchedRule = findMatchingRule(values, taxData);
 
@@ -51,7 +55,11 @@ export default function Home() {
       const calculatedTaxes = calculateTaxes(values.nilaiTransaksi, matchedRule);
       setResults(calculatedTaxes);
       setIsLoading(false);
-  };
+  }, []);
+  
+  if (!settings) {
+    return <div>Loading settings...</div>;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -59,13 +67,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
            <div className="flex items-center gap-3">
              <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-               <Calculator className="h-6 w-6" />
+               {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" className="h-6 w-6" /> : <Calculator className="h-6 w-6" />}
              </div>
              <div>
               <h1 className="text-2xl font-bold font-headline text-primary">
-                PajakPro
+                {settings.title}
               </h1>
-              <p className="text-sm text-muted-foreground">Asisten Pajak Cerdas Anda</p>
+              <p className="text-sm text-muted-foreground">{settings.description}</p>
              </div>
            </div>
            <div className='flex items-center gap-2'>
@@ -144,7 +152,7 @@ export default function Home() {
               <CardTitle>Kalkulator Pajak</CardTitle>
             </CardHeader>
             <CardContent>
-              <PajakProForm onCalculate={handleCalculate} />
+              <PajakProForm onCalculate={handleCalculate} isLoading={isLoading} />
             </CardContent>
           </Card>
           <div className="lg:col-span-3">
@@ -153,7 +161,7 @@ export default function Home() {
         </div>
       </main>
       <footer className="text-center p-4 text-sm text-muted-foreground border-t">
-        © {new Date().getFullYear()} PajakPro. Dibuat untuk kemudahan perhitungan pajak.
+        {settings.footerText.replace('{year}', new Date().getFullYear().toString())}
       </footer>
     </div>
   );

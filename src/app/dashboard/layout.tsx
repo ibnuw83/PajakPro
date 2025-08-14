@@ -36,6 +36,7 @@ export default function DashboardLayout({
     { href: '/dashboard/tax-data', icon: Table, label: 'Data Pajak' },
     { href: '/dashboard/transaction-types', icon: ClipboardList, label: 'Jenis Transaksi' },
     { href: '/dashboard/info-content', icon: BookText, label: 'Konten Informasi'},
+    { href: '/dashboard/settings', icon: Settings, label: 'Pengaturan'},
   ];
 
   return (
@@ -100,6 +101,14 @@ export default function DashboardLayout({
                     {item.label}
                     </Link>
                 ))}
+                 <Link
+                    href="#"
+                    onClick={handleLogout}
+                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                    >
+                    <LogOut className="h-5 w-5" />
+                    Keluar
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>
