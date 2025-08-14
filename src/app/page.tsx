@@ -21,26 +21,22 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleCalculate = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
-    setResults(null);
-    
-    // Get the most current tax data
-    const taxData = getTaxData();
+  const handleCalculate = (values: z.infer<typeof formSchema> | null) => {
+      if (!values) {
+          setResults(null);
+          return;
+      }
+      
+      const taxData = getTaxData();
+      const matchedRule = findMatchingRule(values, taxData);
 
-    const matchedRule = findMatchingRule(values, taxData);
-
-    if (!matchedRule) {
-       setResults(null);
-       setIsLoading(false);
-       return;
-    }
-    
-    const calculatedTaxes = calculateTaxes(values.nilaiTransaksi, matchedRule);
-
-    setResults(calculatedTaxes);
-    
-    setIsLoading(false);
+      if (!matchedRule) {
+          setResults(null);
+          return;
+      }
+      
+      const calculatedTaxes = calculateTaxes(values.nilaiTransaksi, matchedRule);
+      setResults(calculatedTaxes);
   };
 
   return (
@@ -73,7 +69,7 @@ export default function Home() {
               <CardTitle>Kalkulator Pajak</CardTitle>
             </CardHeader>
             <CardContent>
-              <PajakProForm onCalculate={handleCalculate} />
+              <PajakProForm onCalculate={handleCalculate} setIsLoading={setIsLoading} />
             </CardContent>
           </Card>
           <div className="lg:col-span-3">
