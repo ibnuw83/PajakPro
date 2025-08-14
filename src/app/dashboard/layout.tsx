@@ -11,6 +11,7 @@ import {
   LogOut,
   Table,
   Calculator,
+  ClipboardList,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -32,6 +33,7 @@ export default function DashboardLayout({
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Beranda' },
     { href: '/dashboard/tax-data', icon: Table, label: 'Data Pajak' },
+    { href: '/dashboard/transaction-types', icon: ClipboardList, label: 'Jenis Transaksi' },
   ];
 
   return (
