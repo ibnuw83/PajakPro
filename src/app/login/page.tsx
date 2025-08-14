@@ -51,8 +51,8 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
        <div className="absolute top-4 left-4 flex items-center gap-3">
-         <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-          {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" className="h-6 w-6" /> : <Calculator className="h-6 w-6" />}
+         <div className="rounded-lg">
+          {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" className="h-8 w-8 object-contain" /> : <Calculator className="h-8 w-8 text-primary" />}
          </div>
          <div>
            <h1 className="text-2xl font-bold font-headline text-primary">{settings.title}</h1>

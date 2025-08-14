@@ -66,8 +66,8 @@ export default function Home() {
       <header className="p-4 border-b bg-card shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
            <div className="flex items-center gap-3">
-             <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-               {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" className="h-6 w-6" /> : <Calculator className="h-6 w-6" />}
+             <div className="rounded-lg">
+               {settings.logoUrl ? <img src={settings.logoUrl} alt="Logo" className="h-8 w-8 object-contain" /> : <Calculator className="h-8 w-8 text-primary" />}
              </div>
              <div>
               <h1 className="text-2xl font-bold font-headline text-primary">
@@ -152,7 +152,7 @@ export default function Home() {
               <CardTitle>Kalkulator Pajak</CardTitle>
             </CardHeader>
             <CardContent>
-              <PajakProForm onCalculate={handleCalculate} isLoading={isLoading} />
+              <PajakProForm onCalculate={handleCalculate} />
             </CardContent>
           </Card>
           <div className="lg:col-span-3">
