@@ -73,7 +73,7 @@ export default function Home() {
               <CardTitle>Kalkulator Pajak</CardTitle>
             </CardHeader>
             <CardContent>
-              <PajakProForm onCalculate={handleCalculate} setIsLoading={setIsLoading} />
+              <PajakProForm onCalculate={handleCalculate} />
             </CardContent>
           </Card>
           <div className="lg:col-span-3">
