@@ -1,6 +1,7 @@
 import { type TaxDataRow } from '@/lib/types';
 
-export const taxData: TaxDataRow[] = [
+// Renamed to initialTaxData to reflect its use as a starting point for state
+export const initialTaxData: TaxDataRow[] = [
   {
     jenisTransaksi: 'Makan Minum',
     wp: 'Orang Pribadi',
@@ -626,3 +627,41 @@ export const taxData: TaxDataRow[] = [
     status: 'aktif',
   },
 ];
+
+let taxData = [...initialTaxData];
+
+// Function to get the current tax data
+export const getTaxData = () => {
+  return taxData;
+};
+
+// Function to update the tax data
+export const updateTaxData = (newData: TaxDataRow[]) => {
+  taxData = newData;
+};
+
+// Function to add a new tax rule
+export const addTaxRule = (newRule: TaxDataRow) => {
+    taxData.unshift(newRule);
+};
+
+// Function to update an existing tax rule
+export const updateTaxRule = (updatedRule: TaxDataRow, oldRule: TaxDataRow) => {
+    const index = taxData.findIndex(rule => rule === oldRule);
+    if (index !== -1) {
+        taxData[index] = updatedRule;
+    }
+};
+
+// Function to delete a tax rule
+export const deleteTaxRule = (ruleToDelete: TaxDataRow) => {
+    taxData = taxData.filter(rule => rule !== ruleToDelete);
+}
+
+// Function to toggle status
+export const toggleTaxRuleStatus = (ruleToToggle: TaxDataRow) => {
+    const index = taxData.findIndex(rule => rule === ruleToToggle);
+    if (index !== -1) {
+        taxData[index].status = taxData[index].status === 'aktif' ? 'non-aktif' : 'aktif';
+    }
+}

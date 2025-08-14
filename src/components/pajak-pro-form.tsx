@@ -1,12 +1,12 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type z } from 'zod';
 import { Loader2, Calculator } from 'lucide-react';
 
-import { taxData } from '@/data/tax-data';
+import { getTaxData } from '@/data/tax-data';
 import { formSchema } from '@/lib/schema';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { TaxDataRow } from '@/lib/types';
 
 interface PajakProFormProps {
   onCalculate: (values: z.infer<typeof formSchema>) => void;
@@ -35,6 +36,12 @@ interface PajakProFormProps {
 const placeholder = 'Pilih...';
 
 export default function PajakProForm({ onCalculate, isLoading }: PajakProFormProps) {
+  const [taxData, setTaxData] = useState<TaxDataRow[]>([]);
+
+  useEffect(() => {
+    setTaxData(getTaxData());
+  }, []);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,7 +57,6 @@ export default function PajakProForm({ onCalculate, isLoading }: PajakProFormPro
 
   const { watch, setValue } = form;
   const jenisTransaksi = watch('jenisTransaksi');
-  const wp = watch('wp');
   const asnNonAsn = watch('asnNonAsn');
 
   const isHonor = useMemo(() => jenisTransaksi.includes('Honor'), [jenisTransaksi]);
@@ -71,7 +77,7 @@ export default function PajakProForm({ onCalculate, isLoading }: PajakProFormPro
       golongan: ['I', 'II', 'III', 'IV'],
       sertifikatKonstruksi: ['Ada', 'Tidak Ada'],
     };
-  }, []);
+  }, [taxData]);
 
   return (
     <Form {...form}>

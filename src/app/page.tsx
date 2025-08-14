@@ -5,7 +5,7 @@ import { type z } from 'zod';
 import { Calculator, LogIn } from 'lucide-react';
 
 import { type formSchema } from '@/lib/schema';
-import { taxData } from '@/data/tax-data';
+import { getTaxData } from '@/data/tax-data';
 import { findMatchingRule, calculateTaxes } from '@/lib/logic';
 import { type CalculationResult } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
@@ -24,6 +24,9 @@ export default function Home() {
   const handleCalculate = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     setResults(null);
+    
+    // Get the most current tax data
+    const taxData = getTaxData();
 
     const matchedRule = findMatchingRule(values, taxData);
 

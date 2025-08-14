@@ -13,12 +13,26 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "./ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface TaxDataTableProps {
   data: TaxDataRow[];
+  onEdit: (rule: TaxDataRow) => void;
+  onDelete: (rule: TaxDataRow) => void;
+  onToggleStatus: (rule: TaxDataRow) => void;
 }
 
-export function TaxDataTable({ data }: TaxDataTableProps) {
+export function TaxDataTable({ data, onEdit, onDelete, onToggleStatus }: TaxDataTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -35,7 +49,7 @@ export function TaxDataTable({ data }: TaxDataTableProps) {
       <TableBody>
         {data.map((row, index) => (
           <TableRow key={index}>
-            <TableCell className="font-medium">{row.jenisTransaksi}</TableCell>
+            <TableCell className="font-medium max-w-xs truncate">{row.jenisTransaksi}</TableCell>
             <TableCell>{row.wp}</TableCell>
             <TableCell>
               <Badge variant="outline">{row.jenisPajak}</Badge>
@@ -47,8 +61,8 @@ export function TaxDataTable({ data }: TaxDataTableProps) {
               </Badge>
             </TableCell>
             <TableCell>
-              <Badge variant={row.kenaPpn === 'ya' ? 'default' : 'secondary'}>
-                {row.kenaPpn?.toUpperCase()}
+               <Badge variant={row.kenaPpn === 'ya' ? 'default' : 'secondary'}>
+                {row.kenaPpn?.toUpperCase() || 'TIDAK'}
               </Badge>
             </TableCell>
             <TableCell className="text-right">
@@ -61,12 +75,33 @@ export function TaxDataTable({ data }: TaxDataTableProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onEdit(row)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onToggleStatus(row)}>
                             {row.status === 'aktif' ? 'Non-aktifkan' : 'Aktifkan'}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">Hapus</DropdownMenuItem>
+                         <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                               <DropdownMenuItem
+                                    onSelect={(e) => e.preventDefault()}
+                                    className="text-destructive focus:text-destructive focus:bg-destructive/10"
+                                >
+                                    Hapus
+                                </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Tindakan ini tidak dapat dibatalkan. Ini akan menghapus aturan pajak secara permanen dari data.
+                                </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                <AlertDialogCancel>Batal</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => onDelete(row)}>Hapus</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>
