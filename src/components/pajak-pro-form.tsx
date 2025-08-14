@@ -35,22 +35,6 @@ interface PajakProFormProps {
 
 const placeholder = 'Pilih...';
 
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
-
 export default function PajakProForm({ onCalculate, setIsLoading }: PajakProFormProps) {
   const [taxData, setTaxData] = useState<TaxDataRow[]>([]);
 
@@ -72,23 +56,22 @@ export default function PajakProForm({ onCalculate, setIsLoading }: PajakProForm
      mode: 'onChange'
   });
 
-  const { watch, formState } = form;
+  const { watch, formState: { isValid } } = form;
   const watchedValues = watch();
-  const debouncedValues = useDebounce(watchedValues, 300);
 
   useEffect(() => {
-    const performCalculation = async () => {
+    const subscription = watch(async (values) => {
         setIsLoading(true);
-        await form.trigger(); // Manually trigger validation
-        if (formState.isValid) {
-            onCalculate(debouncedValues);
+        const isFormValid = await form.trigger();
+        if (isFormValid) {
+            onCalculate(values as z.infer<typeof formSchema>);
         } else {
             onCalculate(null);
         }
         setIsLoading(false);
-    }
-    performCalculation();
-  }, [debouncedValues, formState.isValid, onCalculate, setIsLoading, form]);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, onCalculate, setIsLoading, form]);
 
 
   const jenisTransaksi = watchedValues.jenisTransaksi;
