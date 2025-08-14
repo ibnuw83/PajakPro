@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { FileText, Percent, Receipt, Download, Loader2 } from 'lucide-react';
 
-import { type CalculationResult } from '@/lib/types';
+import { type CalculationResult, type FormValues } from '@/lib/types';
 import {
   Card,
   CardContent,
@@ -20,6 +20,7 @@ import React from 'react';
 
 interface PajakProResultsProps {
   results: CalculationResult | null;
+  formValues: FormValues | null;
   isLoading: boolean;
 }
 
@@ -69,7 +70,7 @@ const LoadingSkeleton = () => (
 );
 
 
-export default function PajakProResults({ results, isLoading }: PajakProResultsProps) {
+export default function PajakProResults({ results, formValues, isLoading }: PajakProResultsProps) {
   const resultsRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = React.useState(false);
 
@@ -82,18 +83,24 @@ export default function PajakProResults({ results, isLoading }: PajakProResultsP
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
+        const center = pdfWidth / 2;
         
-        // Add Title
-        pdf.setFontSize(18);
-        pdf.text("Hasil Perhitungan Pajak", pdfWidth / 2, 20, { align: 'center' });
+        pdf.setFontSize(16);
+        pdf.text("Hasil Perhitungan Pajak", center, 20, { align: 'center' });
         
+        if (formValues) {
+            pdf.setFontSize(10);
+            pdf.text(`Jenis Transaksi: ${formValues.jenisTransaksi}`, center, 27, { align: 'center' });
+            pdf.text(`Wajib Pajak: ${formValues.wp}`, center, 32, { align: 'center' });
+        }
+
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
         const ratio = canvasWidth / canvasHeight;
         const width = pdfWidth - 20; // with margin
         const height = width / ratio;
 
-        let position = 30; // top margin after title
+        let position = formValues ? 40 : 30; // top margin after title
         
         pdf.addImage(imgData, 'PNG', 10, position, width, height);
         pdf.save('hasil-perhitungan-pajak.pdf');

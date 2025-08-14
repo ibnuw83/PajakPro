@@ -1,3 +1,8 @@
+import { z } from "zod";
+import { formSchema } from "./schema";
+
+export type FormValues = z.infer<typeof formSchema>;
+
 export type TaxDataRow = {
   jenisTransaksi: string;
   wp: string;

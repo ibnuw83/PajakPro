@@ -9,7 +9,7 @@ import { getTaxData } from '@/data/tax-data';
 import { getInfoContent } from '@/data/info-content';
 import { getSettings, type AppSettings } from '@/data/settings';
 import { findMatchingRule, calculateTaxes } from '@/lib/logic';
-import { type CalculationResult, type InfoContentItem } from '@/lib/types';
+import { type CalculationResult, type InfoContentItem, type FormValues } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
 import PajakProForm from '@/components/pajak-pro-form';
@@ -26,6 +26,7 @@ import Image from 'next/image';
 
 export default function Home() {
   const [results, setResults] = useState<CalculationResult | null>(null);
+  const [formValues, setFormValues] = useState<FormValues | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [infoContent, setInfoContent] = useState<InfoContentItem[]>([]);
   const [settings, setSettings] = useState<AppSettings | null>(null);
@@ -38,6 +39,7 @@ export default function Home() {
 
   const handleCalculate = useCallback((values: z.infer<typeof formSchema> | null) => {
       setIsLoading(true);
+      setFormValues(values);
       if (!values) {
           setResults(null);
           setIsLoading(false);
@@ -155,7 +157,7 @@ export default function Home() {
             </CardContent>
           </Card>
           <div className="lg:col-span-3">
-            <PajakProResults results={results} isLoading={isLoading} />
+            <PajakProResults results={results} formValues={formValues} isLoading={isLoading} />
           </div>
         </div>
       </main>
