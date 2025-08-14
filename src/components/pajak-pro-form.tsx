@@ -30,13 +30,13 @@ import { TaxDataRow } from '@/lib/types';
 
 interface PajakProFormProps {
   onCalculate: (values: z.infer<typeof formSchema> | null) => void;
-  setIsLoading: (isLoading: boolean) => void;
 }
 
 const placeholder = 'Pilih...';
 
-export default function PajakProForm({ onCalculate, setIsLoading }: PajakProFormProps) {
+export default function PajakProForm({ onCalculate }: PajakProFormProps) {
   const [taxData, setTaxData] = useState<TaxDataRow[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setTaxData(getTaxData());
@@ -57,25 +57,26 @@ export default function PajakProForm({ onCalculate, setIsLoading }: PajakProForm
   });
 
   const { watch, formState: { isValid } } = form;
-  const watchedValues = watch();
+  
+  const handleFormChange = useCallback(async (values: unknown) => {
+    setIsLoading(true);
+    const isFormValid = await form.trigger();
+    if (isFormValid) {
+        onCalculate(values as z.infer<typeof formSchema>);
+    } else {
+        onCalculate(null);
+    }
+    setIsLoading(false);
+  }, [form, onCalculate]);
 
   useEffect(() => {
-    const subscription = watch(async (values) => {
-        setIsLoading(true);
-        const isFormValid = await form.trigger();
-        if (isFormValid) {
-            onCalculate(values as z.infer<typeof formSchema>);
-        } else {
-            onCalculate(null);
-        }
-        setIsLoading(false);
-    });
+    const subscription = watch(handleFormChange);
     return () => subscription.unsubscribe();
-  }, [watch, onCalculate, setIsLoading, form]);
+  }, [watch, handleFormChange]);
 
 
-  const jenisTransaksi = watchedValues.jenisTransaksi;
-  const asnNonAsn = watchedValues.asnNonAsn;
+  const jenisTransaksi = watch('jenisTransaksi');
+  const asnNonAsn = watch('asnNonAsn');
 
   const isHonor = useMemo(() => jenisTransaksi.includes('Honor'), [jenisTransaksi]);
   const isConstruction = useMemo(
