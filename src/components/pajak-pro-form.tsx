@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type z } from 'zod';
@@ -30,12 +30,28 @@ import { TaxDataRow } from '@/lib/types';
 
 interface PajakProFormProps {
   onCalculate: (values: z.infer<typeof formSchema>) => void;
-  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 const placeholder = 'Pilih...';
 
-export default function PajakProForm({ onCalculate, isLoading }: PajakProFormProps) {
+function useDebounce(value: any, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+export default function PajakProForm({ onCalculate, setIsLoading }: PajakProFormProps) {
   const [taxData, setTaxData] = useState<TaxDataRow[]>([]);
 
   useEffect(() => {
@@ -53,11 +69,22 @@ export default function PajakProForm({ onCalculate, isLoading }: PajakProFormPro
       golongan: 'I',
       sertifikatKonstruksi: 'Ada',
     },
+     mode: 'onChange'
   });
 
-  const { watch, setValue } = form;
-  const jenisTransaksi = watch('jenisTransaksi');
-  const asnNonAsn = watch('asnNonAsn');
+  const { watch, setValue, formState: { isValid } } = form;
+  const watchedValues = watch();
+  const debouncedValues = useDebounce(watchedValues, 500);
+
+  useEffect(() => {
+    if(isValid) {
+      onCalculate(debouncedValues);
+    }
+  }, [debouncedValues, isValid, onCalculate]);
+
+
+  const jenisTransaksi = watchedValues.jenisTransaksi;
+  const asnNonAsn = watchedValues.asnNonAsn;
 
   const isHonor = useMemo(() => jenisTransaksi.includes('Honor'), [jenisTransaksi]);
   const isConstruction = useMemo(
@@ -81,7 +108,7 @@ export default function PajakProForm({ onCalculate, isLoading }: PajakProFormPro
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onCalculate)} className="space-y-6">
+      <form className="space-y-6">
         <FormField
           control={form.control}
           name="nilaiTransaksi"
@@ -208,15 +235,6 @@ export default function PajakProForm({ onCalculate, isLoading }: PajakProFormPro
             </FormItem>
           )}
         />
-
-        <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isLoading}>
-          {isLoading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Calculator className="mr-2 h-4 w-4" />
-          )}
-          Hitung Pajak
-        </Button>
       </form>
     </Form>
   );

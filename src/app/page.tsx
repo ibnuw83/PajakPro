@@ -31,13 +31,9 @@ export default function Home() {
     const matchedRule = findMatchingRule(values, taxData);
 
     if (!matchedRule) {
-      toast({
-        variant: 'destructive',
-        title: 'Aturan Tidak Ditemukan',
-        description: 'Tidak ada aturan pajak yang cocok dengan input yang Anda berikan. Silakan periksa kembali pilihan Anda.',
-      });
-      setIsLoading(false);
-      return;
+       setResults(null);
+       setIsLoading(false);
+       return;
     }
     
     const calculatedTaxes = calculateTaxes(values.nilaiTransaksi, matchedRule);
@@ -77,7 +73,7 @@ export default function Home() {
               <CardTitle>Kalkulator Pajak</CardTitle>
             </CardHeader>
             <CardContent>
-              <PajakProForm onCalculate={handleCalculate} isLoading={isLoading} />
+              <PajakProForm onCalculate={handleCalculate} setIsLoading={setIsLoading} />
             </CardContent>
           </Card>
           <div className="lg:col-span-3">
