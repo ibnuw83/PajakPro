@@ -149,7 +149,7 @@ export default function Home() {
            </div>
         </div>
       </header>
-      <main className="flex-1 p-4 md:p-6">
+      <main className="flex-1 p-4 md:p-6 bg-muted">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
           <Card className="lg:col-span-2 bg-slate-50 dark:bg-slate-900/20">
             <CardHeader>
@@ -164,7 +164,7 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <footer className="text-center p-4 text-sm text-muted-foreground border-t mt-auto">
+      <footer className="text-center p-4 text-sm text-muted-foreground border-t mt-auto bg-background">
         {settings.footerText.replace('{year}', new Date().getFullYear().toString())}
       </footer>
     </div>
