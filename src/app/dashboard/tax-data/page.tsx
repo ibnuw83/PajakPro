@@ -1,26 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react';
 import { TaxDataTable } from '@/components/tax-data-table';
 import { getTaxData } from '@/data/tax-data';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { type TaxDataRow } from '@/lib/types';
 
 
 export default function TaxDataPage() {
-    const [data, setData] = useState<TaxDataRow[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    const refreshData = () => {
-        setIsLoading(true);
-        const freshData = getTaxData(); // No await needed
-        setData(freshData);
-        setIsLoading(false);
-    }
-
-    useEffect(() => {
-        refreshData();
-    }, []);
+    const data: TaxDataRow[] = getTaxData();
 
     return (
         <div>
@@ -34,7 +21,6 @@ export default function TaxDataPage() {
                 <CardContent className="p-0">
                     <TaxDataTable 
                         data={data}
-                        isLoading={isLoading}
                     />
                 </CardContent>
             </Card>

@@ -1,25 +1,10 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getInfoContent } from '@/data/info-content';
 import { type InfoContentItem } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export default function InfoContentPage() {
-    const [contentItems, setContentItems] = useState<InfoContentItem[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchContent = () => {
-            setIsLoading(true);
-            const content = getInfoContent(); // No await needed
-            setContentItems(content);
-            setIsLoading(false);
-        }
-        fetchContent();
-    }, []);
+    const contentItems: InfoContentItem[] = getInfoContent();
 
     return (
         <div>
@@ -39,14 +24,7 @@ export default function InfoContentPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {isLoading ? (
-                                Array.from({length: 5}).map((_, i) => (
-                                    <TableRow key={i}>
-                                        <TableCell><Skeleton className='h-5 w-32'/></TableCell>
-                                        <TableCell><Skeleton className='h-5 w-64'/></TableCell>
-                                    </TableRow>
-                                ))
-                            ) : contentItems.map((item) => (
+                            {contentItems.map((item) => (
                                 <TableRow key={item.id}>
                                     <TableCell className="font-medium">{item.title}</TableCell>
                                     <TableCell className="text-muted-foreground">{item.description}</TableCell>

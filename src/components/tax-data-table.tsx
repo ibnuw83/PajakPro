@@ -10,14 +10,12 @@ import {
 } from "@/components/ui/table"
 import { type TaxDataRow } from "@/lib/types"
 import { Badge } from "./ui/badge";
-import { Skeleton } from "./ui/skeleton";
 
 interface TaxDataTableProps {
   data: TaxDataRow[];
-  isLoading: boolean;
 }
 
-export function TaxDataTable({ data, isLoading }: TaxDataTableProps) {
+export function TaxDataTable({ data }: TaxDataTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -31,18 +29,7 @@ export function TaxDataTable({ data, isLoading }: TaxDataTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {isLoading ? (
-            Array.from({ length: 5 }).map((_, index) => (
-                <TableRow key={index}>
-                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-20" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-12" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-16" /></TableCell>
-                </TableRow>
-            ))
-        ) : data.map((row, index) => (
+        {data.map((row, index) => (
           <TableRow key={index}>
             <TableCell className="font-medium max-w-xs truncate">{row.jenisTransaksi}</TableCell>
             <TableCell>{row.wp}</TableCell>

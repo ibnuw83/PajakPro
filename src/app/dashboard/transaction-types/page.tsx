@@ -1,27 +1,10 @@
-'use client'
-
-import { useState, useEffect } from 'react';
 import { getTaxData } from '@/data/tax-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Skeleton } from '@/components/ui/skeleton';
-
 
 export default function TransactionTypesPage() {
-    const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    const refreshData = () => {
-        setIsLoading(true);
-        const taxData = getTaxData(); // No await needed
-        const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
-        setTransactionTypes(uniqueTypes);
-        setIsLoading(false);
-    }
-
-    useEffect(() => {
-        refreshData();
-    }, []);
+    const taxData = getTaxData();
+    const transactionTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
 
     return (
         <div>
@@ -40,13 +23,7 @@ export default function TransactionTypesPage() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {isLoading ? (
-                            Array.from({length: 5}).map((_, i) => (
-                                <TableRow key={i}>
-                                    <TableCell><Skeleton className='h-5 w-48'/></TableCell>
-                                </TableRow>
-                            ))
-                        ) : transactionTypes.map((type, index) => (
+                        {transactionTypes.map((type, index) => (
                           <TableRow key={index}>
                             <TableCell className="font-medium">{type}</TableCell>
                           </TableRow>
