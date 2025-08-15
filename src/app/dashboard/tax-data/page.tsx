@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { TaxDataTable } from '@/components/tax-data-table';
 import { TaxDataForm } from '@/components/tax-data-form';
@@ -11,21 +11,27 @@ import { PlusCircle } from 'lucide-react';
 
 
 export default function TaxDataPage() {
-    // NOTE: In a real app, this would be a fetch call to an API.
-    // For this prototype, we'll manage state locally.
-    const [data, setData] = useState<TaxDataRow[]>(getTaxData());
+    const [data, setData] = useState<TaxDataRow[]>([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedRule, setSelectedRule] = useState<TaxDataRow | undefined>(undefined);
+    const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
+
+    useEffect(() => {
+        const initialData = getTaxData();
+        setData(initialData);
+        setTransactionTypes([...new Set(initialData.map(d => d.jenisTransaksi))]);
+    }, []);
 
     const handleSave = (ruleToSave: TaxDataRow) => {
-        // This is a mock implementation. In a real app, you would send this to an API.
-        const ruleExists = data.some(rule => rule.jenisTransaksi === ruleToSave.jenisTransaksi && JSON.stringify(rule) === JSON.stringify(ruleToSave));
-
+        let updatedData;
         if (selectedRule) { // Editing existing rule
-             setData(data.map(rule => rule === selectedRule ? ruleToSave : rule));
-        } else if (!ruleExists) { // Adding new rule
-             setData([ruleToSave, ...data]);
+             updatedData = data.map(rule => rule.id === selectedRule.id ? ruleToSave : rule);
+        } else { // Adding new rule
+             const newRule = { ...ruleToSave, id: Date.now().toString() };
+             updatedData = [newRule, ...data];
         }
+        setData(updatedData);
+        // In a real app, you would also update the data source (e.g., call an API)
         
         setIsFormOpen(false);
         setSelectedRule(undefined);
@@ -37,8 +43,9 @@ export default function TaxDataPage() {
     };
 
     const handleDelete = (ruleToDelete: TaxDataRow) => {
-        // This is a mock implementation. In a real app, you would send this to an API.
-        setData(data.filter(rule => rule !== ruleToDelete));
+        const updatedData = data.filter(rule => rule.id !== ruleToDelete.id);
+        setData(updatedData);
+        // In a real app, you would also update the data source (e.g., call an API)
     };
 
     const handleAddNew = () => {
@@ -55,7 +62,7 @@ export default function TaxDataPage() {
                     <p className="text-muted-foreground">Kelola semua aturan perhitungan pajak. Perubahan akan disimpan secara lokal.</p>
                 </div>
                  <Button onClick={handleAddNew}>
-                    <PlusCircle className="mr-2" />
+                    <PlusCircle className="mr-2 h-4 w-4" />
                     Tambah Aturan Pajak
                 </Button>
             </div>
@@ -74,6 +81,7 @@ export default function TaxDataPage() {
                 onOpenChange={setIsFormOpen}
                 onSave={handleSave}
                 rule={selectedRule}
+                transactionTypes={transactionTypes}
             />
         </div>
     )

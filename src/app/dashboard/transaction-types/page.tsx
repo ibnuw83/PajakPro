@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getTaxData } from '@/data/tax-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -12,11 +12,14 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 
 export default function TransactionTypesPage() {
-    // NOTE: In a real-world scenario, you would fetch and update this data via an API.
-    // For this prototype, we're managing it in the client-side state.
-    const [transactionTypes, setTransactionTypes] = useState([...new Set(getTaxData().map(d => d.jenisTransaksi))]);
+    const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        const initialData = getTaxData();
+        setTransactionTypes([...new Set(initialData.map(d => d.jenisTransaksi))]);
+    }, []);
 
     const handleAddNew = () => {
         setSelectedType(undefined);
@@ -30,14 +33,14 @@ export default function TransactionTypesPage() {
 
     const handleDelete = (typeToDelete: string) => {
         setTransactionTypes(currentTypes => currentTypes.filter(type => type !== typeToDelete));
+        // In a real app, you would also update any tax rules using this type.
     };
 
     const handleSave = (name: string) => {
         if (selectedType) {
-            // Edit existing type
             setTransactionTypes(currentTypes => currentTypes.map(t => (t === selectedType ? name : t)));
+             // In a real app, you would find and update all tax rules that use the old name.
         } else {
-            // Add new type if it doesn't exist
             if (!transactionTypes.includes(name)) {
                 setTransactionTypes(currentTypes => [name, ...currentTypes]);
             }
@@ -55,7 +58,7 @@ export default function TransactionTypesPage() {
                     <p className="text-muted-foreground">Lihat dan kelola semua jenis transaksi yang tersedia.</p>
                 </div>
                  <Button onClick={handleAddNew}>
-                    <PlusCircle className="mr-2" />
+                    <PlusCircle className="mr-2 h-4 w-4" />
                     Tambah Jenis Transaksi
                 </Button>
             </div>
@@ -82,12 +85,12 @@ export default function TransactionTypesPage() {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuItem onClick={() => handleEdit(type)}>
-                                            <Edit className="mr-2" /> Edit
+                                            <Edit className="mr-2 h-4 w-4" /> Edit
                                         </DropdownMenuItem>
                                          <AlertDialog>
                                             <AlertDialogTrigger asChild>
                                                 <Button variant="ghost" className="w-full justify-start text-sm text-red-500 hover:text-red-600 px-2 py-1.5 font-normal hover:bg-red-50 dark:hover:bg-red-900/20">
-                                                    <Trash2 className="mr-2" /> Hapus
+                                                    <Trash2 className="mr-2 h-4 w-4" /> Hapus
                                                 </Button>
                                             </AlertDialogTrigger>
                                             <AlertDialogContent>

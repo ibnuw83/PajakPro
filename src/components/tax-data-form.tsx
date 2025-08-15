@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -31,15 +31,13 @@ import {
 } from '@/components/ui/select';
 import { type TaxDataRow } from '@/lib/types';
 import { taxRuleSchema } from '@/lib/schema';
-import { ScrollArea } from './ui/scroll-area';
-import { getTaxData } from '@/data/tax-data';
-
 
 interface TaxDataFormProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
     onSave: (data: TaxDataRow) => void;
     rule?: TaxDataRow;
+    transactionTypes: string[];
 }
 
 const allOptions = {
@@ -54,24 +52,23 @@ const allOptions = {
     status: ['aktif', 'non-aktif'],
 };
 
-const defaultRuleValues: TaxDataRow = {
+const defaultRuleValues: Partial<TaxDataRow> = {
     jenisTransaksi: '',
     wp: 'Tidak ada',
     fakturPajak: 'Tidak ada',
     asnNonAsn: 'Tidak ada',
     golongan: 'Tidak ada',
     sertifikatKonstruksi: 'Tidak ada',
-    jenisPajak: null,
-    kodePajakEbillingPPh: null,
-    dppRasio: null,
-    ptkp: null,
-    tarifPajak: null,
+    jenisPajak: undefined,
+    kodePajakEbillingPPh: undefined,
+    dppRasio: undefined,
+    ptkp: undefined,
+    tarifPajak: undefined,
     kenaPpn: 'tidak',
-    kodePajakEbillingPpn: null,
+    kodePajakEbillingPpn: undefined,
     status: 'aktif',
 };
 
-// Fungsi untuk convert semua null -> undefined di object
 function normalizeNullToUndefined<T extends Record<string, any>>(obj: T): T {
   return Object.fromEntries(
     Object.entries(obj).map(([key, value]) => [
@@ -82,8 +79,7 @@ function normalizeNullToUndefined<T extends Record<string, any>>(obj: T): T {
 }
 
 
-export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormProps) {
-  const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
+export function TaxDataForm({ isOpen, onOpenChange, onSave, rule, transactionTypes }: TaxDataFormProps) {
   
   const form = useForm<z.infer<typeof taxRuleSchema>>({
     resolver: zodResolver(taxRuleSchema),
@@ -91,14 +87,7 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
   });
 
   useEffect(() => {
-    const fetchTransactionTypes = () => {
-        const taxData = getTaxData();
-        const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
-        setTransactionTypes(uniqueTypes);
-    };
-
     if (isOpen) {
-        fetchTransactionTypes();
         form.reset(rule ? normalizeNullToUndefined(rule) : (defaultRuleValues as any));
     }
   }, [rule, form, isOpen]);
@@ -107,7 +96,10 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
     const processedValues = Object.fromEntries(
         Object.entries(values).map(([key, value]) => [key, value === 'Tidak ada' || value === '' ? null : value])
     ) as unknown as TaxDataRow;
-    onSave(processedValues);
+
+    // Preserve the original ID if editing
+    const finalValues = rule?.id ? { ...processedValues, id: rule.id } : processedValues;
+    onSave(finalValues);
   };
 
   return (
@@ -219,12 +211,12 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
 
                 <h3 className="text-sm font-medium text-muted-foreground mt-6 pt-4 border-t">Status Aturan</h3>
                 <FormField control={form.control} name="status" render={({ field }) => (
-                    <FormItem><FormLabel>Status</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{allOptions.status.map(o => <SelectItem key={o} value={o}>{o.charAt(0).toUpperCase() + o.slice(1)}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Status</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value || 'aktif'}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{allOptions.status.map(o => <SelectItem key={o} value={o}>{o.charAt(0).toUpperCase() + o.slice(1)}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                 )} />
             </form>
             </Form>
         </div>
-        <DialogFooter className="mt-4">
+        <DialogFooter className="mt-4 pt-4 border-t">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Batal</Button>
             <Button type="submit" form="tax-rule-form">Simpan</Button>
         </DialogFooter>

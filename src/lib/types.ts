@@ -4,6 +4,7 @@ import { formSchema } from "./schema";
 export type FormValues = z.infer<typeof formSchema>;
 
 export type TaxDataRow = {
+  id: string;
   jenisTransaksi: string;
   wp: string | null;
   fakturPajak: string | null;
