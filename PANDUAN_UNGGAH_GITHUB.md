@@ -85,3 +85,35 @@ git push
 ```
 
 Itu saja! Ulangi 3 langkah di **Bagian 2** ini setiap kali ada pembaruan untuk menjaga repositori GitHub Anda tetap sinkron dengan kode di komputer Anda.
+
+---
+
+## Bagian 3: Mengatasi Error Autentikasi (`Authentication failed`)
+
+Jika Anda mendapatkan error `Authentication failed`, `Missing or invalid credentials`, atau `remote: No anonymous write access` saat menjalankan `git push`, itu artinya terminal Anda tidak memiliki izin untuk mengakses repositori GitHub Anda.
+
+Solusi modern dan paling aman adalah menggunakan **Personal Access Token (PAT)** sebagai pengganti password.
+
+### Langkah A: Buat Personal Access Token (PAT) di GitHub
+
+1.  Buka **[halaman token di Pengaturan GitHub](https://github.com/settings/tokens?type=beta)**.
+2.  Klik **"Generate new token"**, lalu pilih **"Generate new token (classic)"**.
+3.  Pada bagian **Note**, beri nama token Anda (misalnya: `pajakpro-terminal`).
+4.  Pada bagian **Expiration**, pilih durasi token (misalnya 30 atau 90 hari untuk keamanan).
+5.  Pada bagian **Select scopes**, centang kotak **`repo`**. Ini akan memberikan semua izin yang diperlukan untuk mengelola repositori.
+6.  Scroll ke bawah dan klik **"Generate token"**.
+7.  **PENTING:** Salin token yang baru dibuat. **Ini adalah satu-satunya saat Anda bisa melihatnya.** Simpan di tempat yang aman untuk sementara. Token ini berfungsi seperti password super.
+
+### Langkah B: Gunakan Token di Terminal
+
+Setelah Anda memiliki token, kembali ke terminal Anda dan jalankan kembali perintah `git push`:
+
+```bash
+git push
+```
+
+Terminal akan meminta username dan password Anda:
+-   **Username:** Masukkan **username GitHub** Anda.
+-   **Password:** **JANGAN GUNAKAN PASSWORD GITHUB ANDA.** Sebaliknya, **tempel (paste) Personal Access Token (PAT)** yang baru saja Anda buat.
+
+Setelah ini berhasil, terminal Anda seharusnya akan mengingat kredensial ini untuk sementara waktu, dan Anda tidak perlu memasukkannya setiap kali melakukan `push`.
