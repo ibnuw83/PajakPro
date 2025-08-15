@@ -64,6 +64,15 @@ export default function TaxDataPage() {
         const updatedData = data.filter(rule => rule.id !== ruleToDelete.id);
         updateData(updatedData);
     };
+    
+    const handleToggleStatus = (ruleToToggle: TaxDataRow) => {
+        const updatedData = data.map(rule => 
+            rule.id === ruleToToggle.id 
+            ? { ...rule, status: rule.status === 'aktif' ? 'non-aktif' : 'aktif' }
+            : rule
+        );
+        updateData(updatedData);
+    };
 
     const handleAddNew = () => {
         setSelectedRule(undefined);
@@ -89,6 +98,7 @@ export default function TaxDataPage() {
                         data={data}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        onToggleStatus={handleToggleStatus}
                     />
                 </CardContent>
             </Card>

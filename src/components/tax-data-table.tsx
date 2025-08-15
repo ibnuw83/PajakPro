@@ -11,8 +11,8 @@ import {
 import { type TaxDataRow } from "@/lib/types"
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { MoreHorizontal, Edit, Trash2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "./ui/dropdown-menu";
+import { MoreHorizontal, Edit, Trash2, Power, PowerOff } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
 
 
@@ -20,9 +20,10 @@ interface TaxDataTableProps {
   data: TaxDataRow[];
   onEdit: (rule: TaxDataRow) => void;
   onDelete: (rule: TaxDataRow) => void;
+  onToggleStatus: (rule: TaxDataRow) => void;
 }
 
-export function TaxDataTable({ data, onEdit, onDelete }: TaxDataTableProps) {
+export function TaxDataTable({ data, onEdit, onDelete, onToggleStatus }: TaxDataTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -51,8 +52,8 @@ export function TaxDataTable({ data, onEdit, onDelete }: TaxDataTableProps) {
               </Badge>
             </TableCell>
              <TableCell>
-              <Badge variant={row.status === 'aktif' ? 'default' : 'secondary'}>
-                {row.status?.toUpperCase() || 'AKTIF'}
+              <Badge variant={row.status === 'aktif' ? 'default' : 'destructive'}>
+                {row.status?.toUpperCase() || 'NON-AKTIF'}
               </Badge>
             </TableCell>
              <TableCell className="text-right">
@@ -66,12 +67,24 @@ export function TaxDataTable({ data, onEdit, onDelete }: TaxDataTableProps) {
                     <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                     <DropdownMenuItem onClick={() => onEdit(row)}>
-                        <Edit className="mr-2" /> Edit
+                        <Edit className="mr-2 h-4 w-4" /> Edit
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onToggleStatus(row)}>
+                        {row.status === 'aktif' ? (
+                            <>
+                                <PowerOff className="mr-2 h-4 w-4" /> Nonaktifkan
+                            </>
+                        ) : (
+                            <>
+                                <Power className="mr-2 h-4 w-4" /> Aktifkan
+                            </>
+                        )}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                      <AlertDialog>
                         <AlertDialogTrigger asChild>
                              <Button variant="ghost" className="w-full justify-start text-sm text-red-500 hover:text-red-600 px-2 py-1.5 font-normal hover:bg-red-50 dark:hover:bg-red-900/20">
-                                <Trash2 className="mr-2" /> Hapus
+                                <Trash2 className="mr-2 h-4 w-4" /> Hapus
                             </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
