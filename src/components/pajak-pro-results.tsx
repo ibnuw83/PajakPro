@@ -79,33 +79,37 @@ export default function PajakProResults({ results, formValues, isLoading }: Paja
     if (!input) return;
     setIsDownloading(true);
 
-    html2canvas(input, { scale: 2, backgroundColor: null }).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const center = pdfWidth / 2;
-        
-        pdf.setFontSize(16);
-        pdf.text("Hasil Perhitungan Pajak", center, 20, { align: 'center' });
-        
-        if (formValues) {
-            pdf.setFontSize(10);
-            pdf.text(`Jenis Transaksi: ${formValues.jenisTransaksi}`, center, 27, { align: 'center' });
-            pdf.text(`Wajib Pajak: ${formValues.wp}`, center, 32, { align: 'center' });
-        }
+    // Give a bit of time for any re-rendering to settle
+    setTimeout(() => {
+        html2canvas(input, { scale: 2, backgroundColor: null }).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const center = pdfWidth / 2;
+            
+            pdf.setFontSize(16);
+            pdf.text("Hasil Perhitungan Pajak", center, 20, { align: 'center' });
+            
+            if (formValues) {
+                pdf.setFontSize(10);
+                pdf.text(`Jenis Transaksi: ${formValues.jenisTransaksi}`, center, 27, { align: 'center' });
+                pdf.text(`Wajib Pajak: ${formValues.wp}`, center, 32, { align: 'center' });
+            }
 
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        const ratio = canvasWidth / canvasHeight;
-        const width = pdfWidth - 20; // with margin
-        const height = width / ratio;
+            const canvasWidth = canvas.width;
+            const canvasHeight = canvas.height;
+            const ratio = canvasWidth / canvasHeight;
+            const width = pdfWidth - 20; // with margin
+            const height = width / ratio;
 
-        let position = formValues ? 40 : 30; // top margin after title
-        
-        pdf.addImage(imgData, 'PNG', 10, position, width, height);
-        pdf.save('hasil-perhitungan-pajak.pdf');
-        setIsDownloading(false);
-    });
+            let position = formValues ? 40 : 30; // top margin after title
+            
+            pdf.addImage(imgData, 'PNG', 10, position, width, height);
+            pdf.save('hasil-perhitungan-pajak.pdf');
+            setIsDownloading(false);
+        });
+    }, 200)
+
   };
 
   if (isLoading) {
@@ -128,8 +132,8 @@ export default function PajakProResults({ results, formValues, isLoading }: Paja
 
   return (
     <div className='space-y-6'>
-        <div ref={resultsRef} className="space-y-6 bg-background p-1">
-            <Card className="bg-blue-50 dark:bg-blue-900/20">
+        <div ref={resultsRef} className="flex flex-col md:flex-row gap-6 bg-background p-1">
+            <Card className="bg-blue-50 dark:bg-blue-900/20 flex-1">
                 <CardHeader>
                 <div className="flex items-center gap-3">
                     <div className="bg-blue-600 text-white p-2 rounded-lg">
@@ -151,7 +155,7 @@ export default function PajakProResults({ results, formValues, isLoading }: Paja
                 </CardContent>
             </Card>
 
-            <Card className="bg-green-50 dark:bg-green-900/20">
+            <Card className="bg-green-50 dark:bg-green-900/20 flex-1">
                 <CardHeader>
                     <div className="flex items-center gap-3">
                         <div className="bg-green-600 text-white p-2 rounded-lg">
