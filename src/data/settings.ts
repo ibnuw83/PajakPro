@@ -1,3 +1,5 @@
+import settingsJson from './settings.json';
+
 export type AppSettings = {
     title: string;
     description: string;
@@ -5,37 +7,18 @@ export type AppSettings = {
     footerText: string;
 };
 
-const SETTINGS_KEY = 'pajakpro-settings';
+const defaultSettings: AppSettings = settingsJson;
 
-const defaultSettings: AppSettings = {
-    title: 'PajakPro',
-    description: 'Asisten Pajak Cerdas Anda',
-    logoUrl: '',
-    footerText: '© {year} PajakPro. Dibuat untuk kemudahan perhitungan pajak.',
-};
-
+// This function now simply returns the imported data.
 export const getSettings = (): AppSettings => {
-    if (typeof window === 'undefined') {
-        return defaultSettings;
-    }
-    try {
-        const storedSettings = localStorage.getItem(SETTINGS_KEY);
-        if (storedSettings) {
-            // Merge stored settings with defaults to ensure all keys are present
-            const parsed = JSON.parse(storedSettings);
-            return { ...defaultSettings, ...parsed };
-        }
-    } catch (error) {
-        console.error("Failed to parse settings from localStorage", error);
-    }
     return defaultSettings;
 };
 
+// This function is a placeholder for a real backend operation.
 export const updateSettings = (newSettings: Partial<AppSettings>): AppSettings => {
     const currentSettings = getSettings();
     const updatedSettings = { ...currentSettings, ...newSettings };
-     if (typeof window !== 'undefined') {
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
-     }
+    console.log("Simulating settings update.");
+    console.log(JSON.stringify(updatedSettings, null, 2));
     return updatedSettings;
 };

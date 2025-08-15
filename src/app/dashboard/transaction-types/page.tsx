@@ -23,20 +23,24 @@ import {
 
 
 export default function TransactionTypesPage() {
+    // Use window.getTaxData if it exists (for local simulation), otherwise fallback to static import
+    const dataSource = typeof window !== 'undefined' && (window as any).getTaxData ? (window as any).getTaxData : getTaxData;
+    const dataUpdater = typeof window !== 'undefined' && (window as any).updateTaxData ? (window as any).updateTaxData : updateTaxData;
+
     const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
     const [originalType, setOriginalType] = useState<string | undefined>(undefined);
 
     const refreshData = () => {
-        const taxData = getTaxData();
+        const taxData = dataSource();
         const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
         setTransactionTypes(uniqueTypes);
     }
 
     useEffect(() => {
         refreshData();
-    }, []);
+    }, [dataSource]);
 
 
     const handleAdd = () => {
@@ -52,39 +56,29 @@ export default function TransactionTypesPage() {
     }
 
     const handleDelete = (typeToDelete: string) => {
-        const currentTaxData = getTaxData();
+        const currentTaxData = dataSource();
         const updatedTaxData = currentTaxData.filter(rule => rule.jenisTransaksi !== typeToDelete);
-        updateTaxData(updatedTaxData);
+        dataUpdater(updatedTaxData);
         refreshData();
     }
 
     const handleSave = (newTypeName: string) => {
-        const currentTaxData = getTaxData();
+        const currentTaxData = dataSource();
         let updatedTaxData = [...currentTaxData];
 
         if (originalType && originalType !== newTypeName) { // Editing existing type
             updatedTaxData = currentTaxData.map(rule => 
                 rule.jenisTransaksi === originalType ? { ...rule, jenisTransaksi: newTypeName } : rule
             );
-        } else if (!originalType && !transactionTypes.includes(newTypeName)) { // Adding new type
-            // To make the new type appear in the list, we can add a dummy (inactive) rule for it.
-            // This rule won't affect calculations but ensures the type is persisted.
-            // Alternatively, manage a separate list for types, but this is simpler with current data structure.
-             setTransactionTypes(current => {
-                const newSet = new Set([...current, newTypeName]);
-                return Array.from(newSet);
-            });
         }
-
-        updateTaxData(updatedTaxData);
-        refreshData();
+        
+        dataUpdater(updatedTaxData);
         
         // This ensures the new type is visible immediately even if no rule uses it yet.
-        if (!originalType) {
-             setTransactionTypes(current => {
-                const newSet = new Set([...current, newTypeName]);
-                return Array.from(newSet);
-            });
+        if (!originalType && !transactionTypes.includes(newTypeName)) {
+             setTransactionTypes(current => Array.from(new Set([...current, newTypeName])));
+        } else {
+            refreshData();
         }
         
         setIsFormOpen(false);

@@ -11,16 +11,21 @@ import { type TaxDataRow } from '@/lib/types';
 
 
 export default function TaxDataPage() {
+    // Use window.getTaxData if it exists (for local simulation), otherwise fallback to static import
+    const dataSource = typeof window !== 'undefined' && (window as any).getTaxData ? (window as any).getTaxData : getTaxData;
+    const dataUpdater = typeof window !== 'undefined' && (window as any).updateTaxData ? (window as any).updateTaxData : updateTaxData;
+
+
     const [data, setData] = useState<TaxDataRow[]>([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedRule, setSelectedRule] = useState<TaxDataRow | undefined>(undefined);
 
     useEffect(() => {
-        setData(getTaxData());
-    }, []);
+        setData(dataSource());
+    }, [dataSource]);
 
     const refreshData = () => {
-        const freshData = getTaxData();
+        const freshData = dataSource();
         setData(freshData);
     }
 
@@ -35,27 +40,27 @@ export default function TaxDataPage() {
     }
 
     const handleDelete = (ruleToDelete: TaxDataRow) => {
-        const currentData = getTaxData();
+        const currentData = dataSource();
         const updatedData = currentData.filter(rule => 
             JSON.stringify(rule) !== JSON.stringify(ruleToDelete)
         );
-        updateTaxData(updatedData);
+        dataUpdater(updatedData);
         refreshData();
     }
 
     const handleToggleStatus = (ruleToToggle: TaxDataRow) => {
-        const currentData = getTaxData();
+        const currentData = dataSource();
         const updatedData = currentData.map(rule => 
             JSON.stringify(rule) === JSON.stringify(ruleToToggle) 
             ? { ...rule, status: rule.status === 'aktif' ? 'non-aktif' : 'aktif' }
             : rule
         );
-        updateTaxData(updatedData);
+        dataUpdater(updatedData);
         refreshData();
     }
 
     const handleSave = (ruleToSave: TaxDataRow) => {
-        const currentData = getTaxData();
+        const currentData = dataSource();
         let updatedData;
         if (selectedRule) { // Editing existing rule
             updatedData = currentData.map(rule => 
@@ -64,7 +69,7 @@ export default function TaxDataPage() {
         } else { // Adding new rule
             updatedData = [ruleToSave, ...currentData];
         }
-        updateTaxData(updatedData);
+        dataUpdater(updatedData);
         refreshData();
         setIsFormOpen(false);
     };

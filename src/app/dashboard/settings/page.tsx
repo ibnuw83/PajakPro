@@ -57,10 +57,9 @@ export default function SettingsPage() {
     updateSettings(values);
     toast({
       title: 'Pengaturan disimpan!',
-      description: 'Perubahan Anda telah berhasil disimpan.',
+      description: 'Perubahan Anda telah disimulasikan. Untuk persistensi, perbarui file JSON.',
     });
-    // Optionally, force a reload to see changes applied everywhere
-    window.location.reload();
+    // window.location.reload(); // Disabling this as it will revert changes without a real backend
   };
 
   return (
