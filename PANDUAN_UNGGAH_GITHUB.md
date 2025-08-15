@@ -60,36 +60,37 @@ Selesai! Sekarang jika Anda me-refresh halaman repositori Anda di GitHub, semua 
 
 ---
 
-## Bagian 2: Mengunggah Perubahan Lanjutan (Update)
+## Bagian 2: Cara Mengunggah Perubahan Lanjutan (Update)
 
-Setelah Anda melakukan perubahan pada kode (atau setelah saya membantu Anda mengubahnya), gunakan langkah-langkah berikut **setiap kali** Anda ingin menyimpan dan mengunggah pembaruan tersebut.
+Setelah Anda melakukan perubahan pada kode (atau setelah saya membantu Anda mengubahnya), gunakan 3 langkah berikut **setiap kali** Anda ingin menyimpan dan mengunggah pembaruan.
 
-### Langkah 1: Tambahkan Perubahan untuk Disimpan
+### Langkah 1: Siapkan Semua Perubahan
 
-Perintah ini akan menyiapkan semua file yang telah diubah atau file baru untuk di-commit.
+Jalankan perintah ini di terminal. Perintah ini akan memberitahu Git untuk menyertakan semua file yang baru saja diubah.
 
 ```bash
 git add .
 ```
+*(Pastikan ada spasi antara `add` dan `.`)*
 
-### Langkah 2: Buat Commit untuk Perubahan
+### Langkah 2: Simpan Perubahan dengan Pesan
 
-Beri pesan yang jelas dan deskriptif mengenai perubahan yang Anda buat. Ini akan membantu Anda melacak riwayat proyek.
+Jalankan perintah ini selanjutnya. Ganti `"Pesan commit Anda"` dengan deskripsi singkat tentang perubahan yang Anda buat.
 
 ```bash
-git commit -m "Pesan commit Anda di sini"
+git commit -m "Pesan commit Anda"
 ```
-Contoh pesan commit:
+Contoh pesan yang baik:
 - `git commit -m "Fix: Perbaiki bug tampilan di halaman utama"`
 - `git commit -m "Feat: Tambah fitur unduh PDF untuk hasil kalkulasi"`
 - `git commit -m "Update: Perbarui data aturan pajak PPh 21"`
 
-### Langkah 3: Unggah (Push) Perubahan ke GitHub
+### Langkah 3: Kirim Perubahan ke GitHub
 
-Perintah ini akan mengirim commit terbaru Anda ke repositori di GitHub.
+Ini adalah langkah terakhir. Perintah ini akan mengunggah semua perubahan yang sudah Anda simpan ke repositori GitHub.
 
 ```bash
 git push
 ```
 
-Itu saja! Setiap kali ada perubahan, cukup ulangi 3 langkah di **Bagian 2** ini untuk menjaga repositori GitHub Anda tetap sinkron dengan kode di komputer Anda.
+Itu saja! Cukup ulangi 3 langkah di **Bagian 2** ini setiap kali ada pembaruan untuk menjaga repositori GitHub Anda tetap sinkron dengan kode di komputer Anda.
