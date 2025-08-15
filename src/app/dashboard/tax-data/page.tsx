@@ -75,6 +75,7 @@ export default function TaxDataPage() {
     const handleToggleStatus = (ruleToToggle: TaxDataRow) => {
         const updatedData = data.map(rule => {
             if (rule.id === ruleToToggle.id) {
+                // Explicitly define the type for newStatus to satisfy TypeScript
                 const newStatus: 'aktif' | 'non-aktif' = rule.status === 'aktif' ? 'non-aktif' : 'aktif';
                 return { ...rule, status: newStatus };
             }
