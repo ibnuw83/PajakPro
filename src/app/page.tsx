@@ -69,26 +69,26 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="p-4 border-b bg-card shadow-sm">
+       <header className="p-4 border-b bg-primary text-primary-foreground shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
            <div className="flex items-center gap-3">
-             {settings.logoUrl ? <Image src={settings.logoUrl} alt="Logo" width={32} height={32} className="h-8 w-8 object-contain" /> : <Calculator className="h-8 w-8 text-primary" />}
+             {settings.logoUrl && !settings.logoUrl.startsWith('data:image/') ? <Image src={settings.logoUrl} alt="Logo" width={32} height={32} className="h-8 w-8 object-contain" /> : <Calculator className="h-8 w-8" />}
              <div>
-              <h1 className="text-2xl font-bold font-headline text-primary">
+              <h1 className="text-2xl font-bold font-headline">
                 {settings.title}
               </h1>
-              <p className="text-sm text-muted-foreground">{settings.description}</p>
+              <p className="text-sm text-primary-foreground/80">{settings.description}</p>
              </div>
            </div>
            <div className='flex items-center gap-2'>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                 <Button variant="outline" size="icon">
+                 <Button variant="outline" size="icon" className="bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground border-primary-foreground/20">
                     <Info className="h-4 w-4" />
                     <span className="sr-only">Informasi Pajak</span>
                   </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-screen max-w-2xl">
+              <DropdownMenuContent align="end" className="w-screen max-w-2xl text-card-foreground">
                  <DropdownMenuLabel>Informasi Pajak</DropdownMenuLabel>
                  <DropdownMenuSeparator />
                  <ScrollArea className="h-[70vh]">
@@ -140,7 +140,7 @@ export default function Home() {
                  </ScrollArea>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button asChild variant="outline">
+            <Button asChild variant="secondary" className="bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20">
                 <Link href="/login">
                   <LogIn className="mr-2 h-4 w-4" />
                   Login Admin
