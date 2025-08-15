@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   manifest: "/manifest.json",
-  themeColor: "#000000",
+  themeColor: "#ffffff",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   icons: {
     shortcut: "/favicon.ico",
-    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
+    apple: [{ url: "/icons/icon-192x192.png", sizes: "192x192" }],
   },
 };
 
