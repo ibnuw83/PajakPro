@@ -12,7 +12,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { type TaxDataRow } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
-const STORAGE_KEY = 'taxData';
+const TAX_RULES_STORAGE_KEY = 'taxData';
+const TRANSACTION_TYPES_STORAGE_KEY = 'transactionTypes';
 
 export default function TransactionTypesPage() {
     const [taxRules, setTaxRules] = useState<TaxDataRow[]>([]);
@@ -22,29 +23,41 @@ export default function TransactionTypesPage() {
     const { toast } = useToast();
 
     useEffect(() => {
-        let storedData;
-        try {
-            const item = window.localStorage.getItem(STORAGE_KEY);
-            storedData = item ? JSON.parse(item) : null;
-        } catch (error) {
-            console.error("Failed to parse tax data from localStorage", error);
-            storedData = null;
+        // Load tax rules
+        const storedTaxRules = window.localStorage.getItem(TAX_RULES_STORAGE_KEY);
+        const initialTaxRules = storedTaxRules ? JSON.parse(storedTaxRules) : getTaxData();
+        setTaxRules(initialTaxRules);
+
+        // Load transaction types
+        const storedTransactionTypes = window.localStorage.getItem(TRANSACTION_TYPES_STORAGE_KEY);
+        if (storedTransactionTypes) {
+            setTransactionTypes(JSON.parse(storedTransactionTypes));
+        } else {
+            // If no stored types, derive from initial rules and store it
+            const initialTypes = [...new Set(initialTaxRules.map((d: TaxDataRow) => d.jenisTransaksi))].sort();
+            setTransactionTypes(initialTypes);
+            window.localStorage.setItem(TRANSACTION_TYPES_STORAGE_KEY, JSON.stringify(initialTypes));
         }
-        
-        const initialData = storedData || getTaxData();
-        setTaxRules(initialData);
-        setTransactionTypes([...new Set(initialData.map((d: TaxDataRow) => d.jenisTransaksi))].sort());
     }, []);
 
-    const updateData = (updatedData: TaxDataRow[]) => {
-        setTaxRules(updatedData);
-        setTransactionTypes([...new Set(updatedData.map((d: TaxDataRow) => d.jenisTransaksi))].sort());
+    const updateTaxRules = (updatedRules: TaxDataRow[]) => {
+        setTaxRules(updatedRules);
         try {
-            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedData));
+            window.localStorage.setItem(TAX_RULES_STORAGE_KEY, JSON.stringify(updatedRules));
         } catch (error) {
-            console.error("Failed to save tax data to localStorage", error);
+            console.error("Failed to save tax rules to localStorage", error);
         }
     };
+    
+    const updateTransactionTypes = (updatedTypes: string[]) => {
+        const sortedTypes = updatedTypes.sort();
+        setTransactionTypes(sortedTypes);
+         try {
+            window.localStorage.setItem(TRANSACTION_TYPES_STORAGE_KEY, JSON.stringify(sortedTypes));
+        } catch (error) {
+            console.error("Failed to save transaction types to localStorage", error);
+        }
+    }
 
     const handleAddNew = () => {
         setSelectedType(undefined);
@@ -57,9 +70,14 @@ export default function TransactionTypesPage() {
     };
 
     const handleDelete = (typeToDelete: string) => {
-        // Create a copy of the rules, but filter out any that use the type being deleted.
+        // 1. Update the list of transaction types
+        const updatedTypes = transactionTypes.filter(t => t !== typeToDelete);
+        updateTransactionTypes(updatedTypes);
+
+        // 2. Update the tax rules by filtering out any that use the deleted type
         const updatedRules = taxRules.filter(rule => rule.jenisTransaksi !== typeToDelete);
-        updateData(updatedRules);
+        updateTaxRules(updatedRules);
+
         toast({
           title: "Jenis Transaksi Dihapus",
           description: `"${typeToDelete}" dan semua aturan pajak terkait telah dihapus.`,
@@ -74,6 +92,11 @@ export default function TransactionTypesPage() {
                 toast({ variant: "destructive", title: "Gagal", description: "Nama jenis transaksi sudah ada." });
                 return;
             }
+            // 1. Update the list of types
+            const updatedTypes = transactionTypes.map(t => t === selectedType ? newName : t);
+            updateTransactionTypes(updatedTypes);
+
+            // 2. Update the rules that used the old type
             updatedRules = taxRules.map(rule => 
                 rule.jenisTransaksi === selectedType ? { ...rule, jenisTransaksi: newName } : rule
             );
@@ -83,7 +106,11 @@ export default function TransactionTypesPage() {
                 toast({ variant: "destructive", title: "Gagal", description: "Nama jenis transaksi sudah ada." });
                 return;
             }
-            // To add a new type, we add a new default/placeholder rule for it.
+            // 1. Add to the list of types
+            const updatedTypes = [...transactionTypes, newName];
+            updateTransactionTypes(updatedTypes);
+            
+            // 2. To add a new type, we still add a new default/placeholder rule for it for convenience.
             const newRule: TaxDataRow = {
                 id: `rule-${Date.now()}`,
                 jenisTransaksi: newName,
@@ -105,7 +132,7 @@ export default function TransactionTypesPage() {
             toast({ title: "Berhasil", description: `Jenis transaksi baru "${newName}" telah ditambahkan.`});
         }
         
-        updateData(updatedRules);
+        updateTaxRules(updatedRules);
         setIsFormOpen(false);
         setSelectedType(undefined);
     };

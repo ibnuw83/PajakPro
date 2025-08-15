@@ -9,7 +9,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { type TaxDataRow } from '@/lib/types';
 import { PlusCircle } from 'lucide-react';
 
-const STORAGE_KEY = 'taxData';
+const TAX_RULES_STORAGE_KEY = 'taxData';
+const TRANSACTION_TYPES_STORAGE_KEY = 'transactionTypes';
+
 
 export default function TaxDataPage() {
     const [data, setData] = useState<TaxDataRow[]>([]);
@@ -18,24 +20,28 @@ export default function TaxDataPage() {
     const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
 
     useEffect(() => {
-        let storedData;
-        try {
-            const item = window.localStorage.getItem(STORAGE_KEY);
-            storedData = item ? JSON.parse(item) : null;
-        } catch (error) {
-            console.error("Failed to parse tax data from localStorage", error);
-            storedData = null;
-        }
+        // Load tax rules
+        const storedRules = window.localStorage.getItem(TAX_RULES_STORAGE_KEY);
+        const initialRules = storedRules ? JSON.parse(storedRules) : getTaxData();
+        setData(initialRules);
         
-        const initialData = storedData || getTaxData();
-        setData(initialData);
-        setTransactionTypes([...new Set(initialData.map((d: TaxDataRow) => d.jenisTransaksi))]);
+        // Load transaction types
+        const storedTypes = window.localStorage.getItem(TRANSACTION_TYPES_STORAGE_KEY);
+        if (storedTypes) {
+            setTransactionTypes(JSON.parse(storedTypes));
+        } else {
+            // If no stored types, derive from initial rules and then store it
+            const initialTypes = [...new Set(initialRules.map((d: TaxDataRow) => d.jenisTransaksi))].sort();
+            setTransactionTypes(initialTypes);
+            window.localStorage.setItem(TRANSACTION_TYPES_STORAGE_KEY, JSON.stringify(initialTypes));
+        }
+
     }, []);
 
     const updateData = (updatedData: TaxDataRow[]) => {
         setData(updatedData);
         try {
-            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedData));
+            window.localStorage.setItem(TAX_RULES_STORAGE_KEY, JSON.stringify(updatedData));
         } catch (error) {
             console.error("Failed to save tax data to localStorage", error);
         }
@@ -61,6 +67,7 @@ export default function TaxDataPage() {
     };
 
     const handleDelete = (ruleToDelete: TaxDataRow) => {
+        // Deleting a rule does NOT affect the master list of transaction types.
         const updatedData = data.filter(rule => rule.id !== ruleToDelete.id);
         updateData(updatedData);
     };
