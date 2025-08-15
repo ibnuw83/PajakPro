@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect } from 'react';
@@ -17,7 +18,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
 
@@ -59,25 +59,33 @@ export default function TransactionTypesPage() {
 
     const handleSave = (newTypeName: string) => {
         const currentTaxData = getTaxData();
-        let updatedTaxData;
+        let updatedTaxData = [...currentTaxData];
 
         if (originalType && originalType !== newTypeName) { // Editing existing type
             updatedTaxData = currentTaxData.map(rule => 
                 rule.jenisTransaksi === originalType ? { ...rule, jenisTransaksi: newTypeName } : rule
             );
-        } else if (!originalType) { // Adding new type
-            // Just need to refresh the list, no rule is added yet.
-            // The user must add a rule for this new type on the tax data page.
-            updatedTaxData = [...currentTaxData];
-             // A bit of a hack to make sure it appears in the list right away
-            // The proper way would be to create a default rule, but that is more complex.
-            setTransactionTypes(current => [newTypeName, ...current]);
-        } else {
-             updatedTaxData = [...currentTaxData];
+        } else if (!originalType && !transactionTypes.includes(newTypeName)) { // Adding new type
+            // To make the new type appear in the list, we can add a dummy (inactive) rule for it.
+            // This rule won't affect calculations but ensures the type is persisted.
+            // Alternatively, manage a separate list for types, but this is simpler with current data structure.
+             setTransactionTypes(current => {
+                const newSet = new Set([...current, newTypeName]);
+                return Array.from(newSet);
+            });
         }
 
         updateTaxData(updatedTaxData);
         refreshData();
+        
+        // This ensures the new type is visible immediately even if no rule uses it yet.
+        if (!originalType) {
+             setTransactionTypes(current => {
+                const newSet = new Set([...current, newTypeName]);
+                return Array.from(newSet);
+            });
+        }
+        
         setIsFormOpen(false);
     };
 
