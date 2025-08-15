@@ -61,11 +61,11 @@ const defaultRuleValues: TaxDataRow = {
     asnNonAsn: 'Tidak ada',
     golongan: 'Tidak ada',
     sertifikatKonstruksi: 'Tidak ada',
-    jenisPajak: '',
+    jenisPajak: null,
     kodePajakEbillingPPh: null,
     dppRasio: null,
     ptkp: null,
-    tarifPajak: '',
+    tarifPajak: null,
     kenaPpn: 'tidak',
     kodePajakEbillingPpn: null,
     status: 'aktif',
@@ -81,8 +81,8 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
   });
 
   useEffect(() => {
-    const fetchTransactionTypes = async () => {
-        const taxData = await getTaxData();
+    const fetchTransactionTypes = () => {
+        const taxData = getTaxData();
         const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
         setTransactionTypes(uniqueTypes);
     };

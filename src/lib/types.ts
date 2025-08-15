@@ -5,7 +5,7 @@ export type FormValues = z.infer<typeof formSchema>;
 
 export type TaxDataRow = {
   jenisTransaksi: string;
-  wp: string;
+  wp: string | null;
   fakturPajak: string | null;
   asnNonAsn: string | null;
   golongan: string | null;
