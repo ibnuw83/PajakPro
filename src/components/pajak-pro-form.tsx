@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { type z } from 'zod';
 import { Loader2, Calculator } from 'lucide-react';
 
-import { getTaxData } from '@/data/tax-data';
 import { formSchema } from '@/lib/schema';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -30,6 +29,7 @@ import { TaxDataRow } from '@/lib/types';
 
 interface PajakProFormProps {
   onCalculate: (values: z.infer<typeof formSchema> | null) => void;
+  taxData: TaxDataRow[];
 }
 
 const placeholder = 'Pilih...';
@@ -37,13 +37,7 @@ const placeholder = 'Pilih...';
 const filterNullStrings = (arr: (string | null)[]) =>
   arr.filter((o): o is string => o !== null);
 
-export default function PajakProForm({ onCalculate }: PajakProFormProps) {
-  const [taxData, setTaxData] = useState<TaxDataRow[]>([]);
-  
-  useEffect(() => {
-    // No need for async, data is imported directly
-    setTaxData(getTaxData());
-  }, []);
+export default function PajakProForm({ onCalculate, taxData }: PajakProFormProps) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

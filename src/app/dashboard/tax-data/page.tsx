@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { type TaxDataRow } from '@/lib/types';
 import { PlusCircle } from 'lucide-react';
 
+const STORAGE_KEY = 'taxData';
 
 export default function TaxDataPage() {
     const [data, setData] = useState<TaxDataRow[]>([]);
@@ -17,21 +18,38 @@ export default function TaxDataPage() {
     const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
 
     useEffect(() => {
-        const initialData = getTaxData();
+        let storedData;
+        try {
+            const item = window.localStorage.getItem(STORAGE_KEY);
+            storedData = item ? JSON.parse(item) : null;
+        } catch (error) {
+            console.error("Failed to parse tax data from localStorage", error);
+            storedData = null;
+        }
+        
+        const initialData = storedData || getTaxData();
         setData(initialData);
-        setTransactionTypes([...new Set(initialData.map(d => d.jenisTransaksi))]);
+        setTransactionTypes([...new Set(initialData.map((d: TaxDataRow) => d.jenisTransaksi))]);
     }, []);
+
+    const updateData = (updatedData: TaxDataRow[]) => {
+        setData(updatedData);
+        try {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedData));
+        } catch (error) {
+            console.error("Failed to save tax data to localStorage", error);
+        }
+    };
 
     const handleSave = (ruleToSave: TaxDataRow) => {
         let updatedData;
         if (selectedRule) { // Editing existing rule
              updatedData = data.map(rule => rule.id === selectedRule.id ? ruleToSave : rule);
         } else { // Adding new rule
-             const newRule = { ...ruleToSave, id: Date.now().toString() };
+             const newRule = { ...ruleToSave, id: `rule-${Date.now()}` };
              updatedData = [newRule, ...data];
         }
-        setData(updatedData);
-        // In a real app, you would also update the data source (e.g., call an API)
+        updateData(updatedData);
         
         setIsFormOpen(false);
         setSelectedRule(undefined);
@@ -44,8 +62,7 @@ export default function TaxDataPage() {
 
     const handleDelete = (ruleToDelete: TaxDataRow) => {
         const updatedData = data.filter(rule => rule.id !== ruleToDelete.id);
-        setData(updatedData);
-        // In a real app, you would also update the data source (e.g., call an API)
+        updateData(updatedData);
     };
 
     const handleAddNew = () => {

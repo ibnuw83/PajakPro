@@ -9,7 +9,7 @@ import { getTaxData } from '@/data/tax-data';
 import { getInfoContent } from '@/data/info-content';
 import { getSettings, type AppSettings } from '@/data/settings';
 import { findMatchingRule, calculateTaxes } from '@/lib/logic';
-import { type CalculationResult, type InfoContentItem, type FormValues } from '@/lib/types';
+import { type CalculationResult, type InfoContentItem, type FormValues, type TaxDataRow } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
 import PajakProForm from '@/components/pajak-pro-form';
@@ -23,6 +23,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Image from 'next/image';
 
+const STORAGE_KEY = 'taxData';
 
 export default function Home() {
   const [results, setResults] = useState<CalculationResult | null>(null);
@@ -30,10 +31,19 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [infoContent, setInfoContent] = useState<InfoContentItem[]>([]);
   const [settings, setSettings] = useState<AppSettings | null>(null);
+  const [taxRules, setTaxRules] = useState<TaxDataRow[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
-    // No need for async, data is imported directly
+    let storedData;
+    try {
+        const item = window.localStorage.getItem(STORAGE_KEY);
+        storedData = item ? JSON.parse(item) : null;
+    } catch (error) {
+        console.error("Failed to parse tax data from localStorage", error);
+        storedData = null;
+    }
+    setTaxRules(storedData || getTaxData());
     setInfoContent(getInfoContent());
     setSettings(getSettings());
   }, []);
@@ -47,8 +57,7 @@ export default function Home() {
           return;
       }
       
-      const taxData = getTaxData(); // No await needed
-      const matchedRule = findMatchingRule(values, taxData);
+      const matchedRule = findMatchingRule(values, taxRules);
 
       if (!matchedRule) {
           setResults(null);
@@ -59,7 +68,7 @@ export default function Home() {
       const calculatedTaxes = calculateTaxes(values.nilaiTransaksi, matchedRule);
       setResults(calculatedTaxes);
       setIsLoading(false);
-  }, []);
+  }, [taxRules]);
   
   if (!settings) {
     return <div>Loading settings...</div>;
@@ -154,7 +163,7 @@ export default function Home() {
               <CardTitle>Kalkulator Pajak</CardTitle>
             </CardHeader>
             <CardContent>
-              <PajakProForm onCalculate={handleCalculate} />
+              <PajakProForm onCalculate={handleCalculate} taxData={taxRules} />
             </CardContent>
           </Card>
           <div className="lg:col-span-3">
