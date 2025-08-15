@@ -3,9 +3,7 @@
 import { useRef, useMemo } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { FileText, Percent, Receipt, Download, Loader2, PieChart as PieChartIcon } from 'lucide-react';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
+import { FileText, Percent, Receipt, Download, Loader2 } from 'lucide-react';
 
 import { type CalculationResult, type FormValues } from '@/lib/types';
 import {
@@ -19,7 +17,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { Button } from './ui/button';
 import React from 'react';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
 
 interface PajakProResultsProps {
   results: CalculationResult | null;
@@ -76,22 +73,6 @@ const LoadingSkeleton = () => (
 export default function PajakProResults({ results, formValues, isLoading }: PajakProResultsProps) {
   const resultsRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = React.useState(false);
-
-  const chartData = useMemo(() => {
-    if (!results) return [];
-    return [
-        { name: 'Total Diterima', value: results.totalBayar, fill: 'hsl(var(--chart-2))' },
-        { name: 'PPh', value: results.pph, fill: 'hsl(var(--chart-3))'  },
-        { name: 'PPN', value: results.ppn, fill: 'hsl(var(--chart-5))' },
-    ].filter(d => d.value > 0);
-  }, [results]);
-    
-  const chartConfig = {
-      value: { label: "Value" },
-      totalDiterima: { label: "Total Diterima", color: "hsl(var(--chart-2))" },
-      pph: { label: "PPh", color: "hsl(var(--chart-3))" },
-      ppn: { label: "PPN", color: "hsl(var(--chart-5))" },
-  };
 
   const handleDownloadPdf = () => {
     const input = resultsRef.current;
@@ -170,79 +151,31 @@ export default function PajakProResults({ results, formValues, isLoading }: Paja
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="bg-green-50 dark:bg-green-900/20">
-                    <CardHeader>
-                        <div className="flex items-center gap-3">
-                            <div className="bg-green-600 text-white p-2 rounded-lg">
-                                <Receipt className="h-5 w-5"/>
-                            </div>
-                            <div>
-                                <CardTitle>Perhitungan Pajak</CardTitle>
-                                <CardDescription>Rincian perhitungan PPh dan PPN</CardDescription>
-                            </div>
+            <Card className="bg-green-50 dark:bg-green-900/20">
+                <CardHeader>
+                    <div className="flex items-center gap-3">
+                        <div className="bg-green-600 text-white p-2 rounded-lg">
+                            <Receipt className="h-5 w-5"/>
                         </div>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                        <ResultRow label="Nilai Transaksi (Bruto)" value={formatCurrency(nilaiTransaksi)} />
-                        <ResultRow label="Dasar Pengenaan Pajak (DPP)" value={formatCurrency(dpp)} />
-                        <ResultRow label="Potongan PPh" value={formatCurrency(pph)} />
-                        <ResultRow label="Potongan PPN (11%)" value={formatCurrency(ppn)} />
-                        <ResultRow label="Total Pajak (PPh + PPN)" value={formatCurrency(totalPajak)} />
-                        <Separator className="my-3"/>
-                        <div className="flex justify-between items-center text-lg">
-                            <p className="font-semibold">Total yang harus dibayarkan</p>
-                            <p className="font-bold text-primary">{formatCurrency(totalBayar)}</p>
+                        <div>
+                            <CardTitle>Perhitungan Pajak</CardTitle>
+                            <CardDescription>Rincian perhitungan PPh dan PPN</CardDescription>
                         </div>
-                    </CardContent>
-                </Card>
-
-                {chartData.length > 1 && (
-                     <Card>
-                        <CardHeader>
-                             <div className="flex items-center gap-3">
-                                <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-                                    <PieChartIcon className="h-5 w-5"/>
-                                </div>
-                                <div>
-                                    <CardTitle>Visualisasi Komposisi</CardTitle>
-                                    <CardDescription>Dari Nilai Transaksi Bruto</CardDescription>
-                                </div>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <ChartContainer config={chartConfig} className='w-full h-52'>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Tooltip
-                                            cursor={false}
-                                            content={<ChartTooltipContent 
-                                                hideLabel 
-                                                formatter={(value) => formatCurrency(value as number)}
-                                            />}
-                                        />
-                                        <Pie
-                                            data={chartData}
-                                            dataKey="value"
-                                            nameKey="name"
-                                            cx="50%"
-                                            cy="50%"
-                                            outerRadius={80}
-                                            labelLine={false}
-                                            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-                                        >
-                                            {chartData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={entry.fill} />
-                                            ))}
-                                        </Pie>
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </ChartContainer>
-                        </CardContent>
-                    </Card>
-                )}
-            </div>
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                    <ResultRow label="Nilai Transaksi (Bruto)" value={formatCurrency(nilaiTransaksi)} />
+                    <ResultRow label="Dasar Pengenaan Pajak (DPP)" value={formatCurrency(dpp)} />
+                    <ResultRow label="Potongan PPh" value={formatCurrency(pph)} />
+                    <ResultRow label="Potongan PPN (11%)" value={formatCurrency(ppn)} />
+                    <ResultRow label="Total Pajak (PPh + PPN)" value={formatCurrency(totalPajak)} />
+                    <Separator className="my-3"/>
+                    <div className="flex justify-between items-center text-lg">
+                        <p className="font-semibold">Total yang harus dibayarkan</p>
+                        <p className="font-bold text-primary">{formatCurrency(totalBayar)}</p>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
 
         <div className="mt-6 flex justify-end">
