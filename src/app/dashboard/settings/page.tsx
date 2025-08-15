@@ -51,7 +51,7 @@ export default function SettingsPage() {
                 <CardHeader>
                     <CardTitle>Informasi Umum</CardTitle>
                     <CardDescription>Atur judul, deskripsi, dan logo aplikasi Anda.</CardDescription>
-                </Header>
+                </CardHeader>
                 <CardContent className="space-y-4">
                     <FormField
                         control={form.control}
@@ -98,7 +98,7 @@ export default function SettingsPage() {
                 <CardHeader>
                     <CardTitle>Footer</CardTitle>
                     <CardDescription>Atur teks yang ditampilkan di bagian bawah halaman.</CardDescription>
-                </Header>
+                </CardHeader>
                 <CardContent>
                      <FormField
                         control={form.control}
