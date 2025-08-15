@@ -1,8 +1,14 @@
-# Panduan Unggah Proyek ke GitHub
+# Panduan Mengelola Proyek dengan GitHub
 
-Berikut adalah langkah-langkah untuk mengunggah kode proyek ini ke repositori baru di GitHub. Panduan ini mengasumsikan Anda sudah memiliki akun GitHub dan Git sudah terinstal di komputer Anda.
+Berikut adalah langkah-langkah untuk mengunggah kode proyek ini ke repositori baru di GitHub dan cara memperbaruinya secara berkala. Panduan ini mengasumsikan Anda sudah memiliki akun GitHub dan Git sudah terinstal di komputer Anda.
 
-## Langkah 1: Buat Repositori Baru di GitHub
+---
+
+## Bagian 1: Unggahan Awal Proyek
+
+Gunakan langkah-langkah ini **hanya satu kali** saat pertama kali mengunggah proyek Anda.
+
+### Langkah 1: Buat Repositori Baru di GitHub
 
 1.  Buka situs [GitHub.com](https://github.com) dan masuk ke akun Anda.
 2.  Klik tombol **"+"** di pojok kanan atas, lalu pilih **"New repository"**.
@@ -14,7 +20,7 @@ Berikut adalah langkah-langkah untuk mengunggah kode proyek ini ke repositori ba
 
 Setelah repositori dibuat, Anda akan melihat halaman dengan beberapa perintah. URL repositori Anda akan terlihat di sana, contohnya: `https://github.com/NAMA_ANDA/pajakpro-app.git`.
 
-## Langkah 2: Unggah Kode dari Komputer Anda
+### Langkah 2: Unggah Kode dari Komputer Anda
 
 Buka terminal atau command prompt di dalam folder proyek Anda, lalu jalankan perintah-perintah berikut secara berurutan.
 
@@ -51,3 +57,39 @@ Buka terminal atau command prompt di dalam folder proyek Anda, lalu jalankan per
     ```
 
 Selesai! Sekarang jika Anda me-refresh halaman repositori Anda di GitHub, semua file proyek akan muncul di sana.
+
+---
+
+## Bagian 2: Mengunggah Perubahan Lanjutan (Update)
+
+Setelah Anda melakukan perubahan pada kode (atau setelah saya membantu Anda mengubahnya), gunakan langkah-langkah berikut **setiap kali** Anda ingin menyimpan dan mengunggah pembaruan tersebut.
+
+### Langkah 1: Tambahkan Perubahan untuk Disimpan
+
+Perintah ini akan menyiapkan semua file yang telah diubah atau file baru untuk di-commit.
+
+```bash
+git add .
+```
+
+### Langkah 2: Buat Commit untuk Perubahan
+
+Beri pesan yang jelas dan deskriptif mengenai perubahan yang Anda buat. Ini akan membantu Anda melacak riwayat proyek.
+
+```bash
+git commit -m "Pesan commit Anda di sini"
+```
+Contoh pesan commit:
+- `git commit -m "Fix: Perbaiki bug tampilan di halaman utama"`
+- `git commit -m "Feat: Tambah fitur unduh PDF untuk hasil kalkulasi"`
+- `git commit -m "Update: Perbarui data aturan pajak PPh 21"`
+
+### Langkah 3: Unggah (Push) Perubahan ke GitHub
+
+Perintah ini akan mengirim commit terbaru Anda ke repositori di GitHub.
+
+```bash
+git push
+```
+
+Itu saja! Setiap kali ada perubahan, cukup ulangi 3 langkah di **Bagian 2** ini untuk menjaga repositori GitHub Anda tetap sinkron dengan kode di komputer Anda.
