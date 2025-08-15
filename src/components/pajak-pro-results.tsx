@@ -77,6 +77,22 @@ export default function PajakProResults({ results, formValues, isLoading }: Paja
   const resultsRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = React.useState(false);
 
+  const chartData = useMemo(() => {
+    if (!results) return [];
+    return [
+        { name: 'Total Diterima', value: results.totalBayar, fill: 'hsl(var(--chart-2))' },
+        { name: 'PPh', value: results.pph, fill: 'hsl(var(--chart-3))'  },
+        { name: 'PPN', value: results.ppn, fill: 'hsl(var(--chart-5))' },
+    ].filter(d => d.value > 0);
+  }, [results]);
+    
+  const chartConfig = {
+      value: { label: "Value" },
+      totalDiterima: { label: "Total Diterima", color: "hsl(var(--chart-2))" },
+      pph: { label: "PPh", color: "hsl(var(--chart-3))" },
+      ppn: { label: "PPN", color: "hsl(var(--chart-5))" },
+  };
+
   const handleDownloadPdf = () => {
     const input = resultsRef.current;
     if (!input) return;
@@ -128,19 +144,6 @@ export default function PajakProResults({ results, formValues, isLoading }: Paja
   }
 
   const { matchedRule, nilaiTransaksi, dpp, pph, ppn, totalBayar, totalPajak } = results;
-
-  const chartData = useMemo(() => [
-        { name: 'Total Diterima', value: totalBayar, fill: 'hsl(var(--chart-2))' },
-        { name: 'PPh', value: pph, fill: 'hsl(var(--chart-3))'  },
-        { name: 'PPN', value: ppn, fill: 'hsl(var(--chart-5))' },
-    ].filter(d => d.value > 0), [totalBayar, pph, ppn]);
-    
-  const chartConfig = {
-      value: { label: "Value" },
-      totalDiterima: { label: "Total Diterima", color: "hsl(var(--chart-2))" },
-      pph: { label: "PPh", color: "hsl(var(--chart-3))" },
-      ppn: { label: "PPN", color: "hsl(var(--chart-5))" },
-  }
 
   return (
     <div className='space-y-6'>
