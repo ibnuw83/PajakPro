@@ -34,6 +34,9 @@ interface PajakProFormProps {
 
 const placeholder = 'Pilih...';
 
+const filterNullStrings = (arr: (string | null)[]) =>
+  arr.filter((o): o is string => o !== null);
+
 export default function PajakProForm({ onCalculate }: PajakProFormProps) {
   const [taxData, setTaxData] = useState<TaxDataRow[]>([]);
   
@@ -86,12 +89,10 @@ export default function PajakProForm({ onCalculate }: PajakProFormProps) {
   const isAsn = useMemo(() => asnNonAsn === 'ASN', [asnNonAsn]);
 
   const options = useMemo(() => {
-    const nonNull = <T>(value: T | null): value is T => value !== null;
-    
     return {
-      jenisTransaksi: [...new Set(taxData.map(d => d.jenisTransaksi).filter(nonNull))],
-      wp: [...new Set(taxData.map(d => d.wp).filter(nonNull))],
-      fakturPajak: [...new Set(taxData.map(d => d.fakturPajak).filter(nonNull))],
+      jenisTransaksi: [...new Set(taxData.map(d => d.jenisTransaksi))],
+      wp: [...new Set(taxData.map(d => d.wp))],
+      fakturPajak: [...new Set(taxData.map(d => d.fakturPajak))],
       asnNonAsn: ['ASN', 'NON ASN'],
       golongan: ['I', 'II', 'III', 'IV'],
       sertifikatKonstruksi: ['Ada', 'Tidak Ada'],
@@ -134,7 +135,7 @@ export default function PajakProForm({ onCalculate }: PajakProFormProps) {
                   <SelectTrigger><SelectValue placeholder={placeholder} /></SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {options.jenisTransaksi.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  {filterNullStrings(options.jenisTransaksi).map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -152,7 +153,7 @@ export default function PajakProForm({ onCalculate }: PajakProFormProps) {
                   <SelectTrigger><SelectValue placeholder={placeholder} /></SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {options.wp.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  {filterNullStrings(options.wp).map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -170,7 +171,7 @@ export default function PajakProForm({ onCalculate }: PajakProFormProps) {
                   <SelectTrigger><SelectValue placeholder={placeholder} /></SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {options.fakturPajak.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  {filterNullStrings(options.fakturPajak).map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
                 </SelectContent>
               </Select>
               <FormMessage />
