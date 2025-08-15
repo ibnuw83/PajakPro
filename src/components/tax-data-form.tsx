@@ -78,27 +78,29 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
   });
 
   useEffect(() => {
-    // Fetch unique transaction types
-    const taxData = getTaxData();
-    const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
-    setTransactionTypes(uniqueTypes);
+    if (isOpen) {
+      // Fetch unique transaction types every time the dialog opens
+      const taxData = getTaxData();
+      const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
+      setTransactionTypes(uniqueTypes);
 
-    form.reset(rule || {
-        jenisTransaksi: '',
-        wp: 'Tidak ada',
-        fakturPajak: 'Tidak ada',
-        asnNonAsn: 'Tidak ada',
-        golongan: 'Tidak ada',
-        sertifikatKonstruksi: 'Tidak ada',
-        jenisPajak: '',
-        kodePajakEbillingPPh: '',
-        dppRasio: '',
-        ptkp: '',
-        tarifPajak: '',
-        kenaPpn: 'tidak',
-        kodePajakEbillingPpn: '',
-        status: 'aktif',
-    });
+      form.reset(rule || {
+          jenisTransaksi: '',
+          wp: 'Tidak ada',
+          fakturPajak: 'Tidak ada',
+          asnNonAsn: 'Tidak ada',
+          golongan: 'Tidak ada',
+          sertifikatKonstruksi: 'Tidak ada',
+          jenisPajak: '',
+          kodePajakEbillingPPh: '',
+          dppRasio: '',
+          ptkp: '',
+          tarifPajak: '',
+          kenaPpn: 'tidak',
+          kodePajakEbillingPpn: '',
+          status: 'aktif',
+      });
+    }
   }, [rule, form, isOpen]);
 
   const onSubmit = (values: z.infer<typeof taxRuleSchema>) => {
