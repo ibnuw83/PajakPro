@@ -86,10 +86,12 @@ export default function PajakProForm({ onCalculate }: PajakProFormProps) {
   const isAsn = useMemo(() => asnNonAsn === 'ASN', [asnNonAsn]);
 
   const options = useMemo(() => {
+    const nonNull = <T>(value: T | null): value is T => value !== null;
+    
     return {
-      jenisTransaksi: [...new Set(taxData.map(d => d.jenisTransaksi))],
-      wp: [...new Set(taxData.map(d => d.wp))],
-      fakturPajak: [...new Set(taxData.filter(d => d.fakturPajak).map(d => d.fakturPajak as string))],
+      jenisTransaksi: [...new Set(taxData.map(d => d.jenisTransaksi).filter(nonNull))],
+      wp: [...new Set(taxData.map(d => d.wp).filter(nonNull))],
+      fakturPajak: [...new Set(taxData.map(d => d.fakturPajak).filter(nonNull))],
       asnNonAsn: ['ASN', 'NON ASN'],
       golongan: ['I', 'II', 'III', 'IV'],
       sertifikatKonstruksi: ['Ada', 'Tidak Ada'],
