@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const formSchema = z.object({
-  nilaiTransaksi: z.number().min(1, 'Nilai transaksi harus diisi'),
+  nilaiTransaksi: z.number({required_error: "Nilai transaksi harus diisi."}).min(1, 'Nilai transaksi harus lebih dari 0.'),
   jenisTransaksi: z.string({ required_error: 'Jenis transaksi harus dipilih.' }).min(1, 'Jenis transaksi harus dipilih.'),
   wp: z.string({ required_error: 'Wajib Pajak (WP) harus dipilih.' }).min(1, 'Wajib Pajak (WP) harus dipilih.'),
   fakturPajak: z.string({ required_error: 'Status faktur pajak harus dipilih.' }).min(1, 'Status faktur pajak harus dipilih.'),

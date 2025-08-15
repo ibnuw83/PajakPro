@@ -47,7 +47,7 @@ export default function PajakProForm({ onCalculate }: PajakProFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nilaiTransaksi: 0,
+      nilaiTransaksi: undefined, // Changed from 0 to allow empty initial state
       jenisTransaksi: '',
       wp: '',
       fakturPajak: '',
@@ -112,7 +112,11 @@ export default function PajakProForm({ onCalculate }: PajakProFormProps) {
                   type="number"
                   placeholder="Contoh: 5000000"
                   {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  value={field.value ?? ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    field.onChange(value === '' ? undefined : Number(value));
+                  }}
                 />
               </FormControl>
               <FormMessage />
