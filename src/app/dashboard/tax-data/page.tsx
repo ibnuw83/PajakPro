@@ -75,7 +75,7 @@ export default function TaxDataPage() {
     const handleToggleStatus = (ruleToToggle: TaxDataRow) => {
         const updatedData = data.map(rule => 
             rule.id === ruleToToggle.id 
-            ? { ...rule, status: rule.status === 'aktif' ? 'non-aktif' : 'aktif' }
+            ? { ...rule, status: rule.status === 'aktif' ? 'non-aktif' : 'aktif' as const }
             : rule
         );
         updateData(updatedData);
