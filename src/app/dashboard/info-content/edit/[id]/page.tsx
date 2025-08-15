@@ -62,7 +62,8 @@ export default function EditInfoContentPage() {
         router.push('/dashboard/info-content');
       }
     }
-  }, [id, router, form]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, router]);
   
   const onSubmit = (values: z.infer<typeof infoContentSchema>) => {
     if (typeof id !== 'string') return;

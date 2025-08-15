@@ -23,22 +23,19 @@ const settingsSchema = z.object({
 
 export default function SettingsPage() {
   const { toast } = useToast();
-  const [initialSettings, setInitialSettings] = useState<AppSettings>(getSettings());
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof settingsSchema>>({
     resolver: zodResolver(settingsSchema),
-    defaultValues: initialSettings,
+    defaultValues: getSettings(),
   });
 
   useEffect(() => {
     const settings = getSettings();
-    setInitialSettings(settings);
-    form.reset(settings);
     if (settings.logoUrl) {
       setLogoPreview(settings.logoUrl);
     }
-  }, [form]);
+  }, []);
 
   const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -59,7 +56,7 @@ export default function SettingsPage() {
       title: 'Pengaturan disimpan!',
       description: 'Perubahan Anda telah disimulasikan. Untuk persistensi, perbarui file JSON.',
     });
-    // window.location.reload(); // Disabling this as it will revert changes without a real backend
+    // Consider page reload or state update to reflect changes globally
   };
 
   return (

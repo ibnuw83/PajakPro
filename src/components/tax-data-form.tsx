@@ -54,52 +54,39 @@ const allOptions = {
     status: ['aktif', 'non-aktif'],
 };
 
+const defaultRuleValues: TaxDataRow = {
+    jenisTransaksi: '',
+    wp: 'Tidak ada',
+    fakturPajak: 'Tidak ada',
+    asnNonAsn: 'Tidak ada',
+    golongan: 'Tidak ada',
+    sertifikatKonstruksi: 'Tidak ada',
+    jenisPajak: '',
+    kodePajakEbillingPPh: null,
+    dppRasio: null,
+    ptkp: null,
+    tarifPajak: '',
+    kenaPpn: 'tidak',
+    kodePajakEbillingPpn: null,
+    status: 'aktif',
+};
+
+
 export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormProps) {
   const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
   
   const form = useForm<z.infer<typeof taxRuleSchema>>({
     resolver: zodResolver(taxRuleSchema),
-    defaultValues: rule || {
-        jenisTransaksi: '',
-        wp: 'Tidak ada',
-        fakturPajak: 'Tidak ada',
-        asnNonAsn: 'Tidak ada',
-        golongan: 'Tidak ada',
-        sertifikatKonstruksi: 'Tidak ada',
-        jenisPajak: '',
-        kodePajakEbillingPPh: '',
-        dppRasio: '',
-        ptkp: '',
-        tarifPajak: '',
-        kenaPpn: 'tidak',
-        kodePajakEbillingPpn: '',
-        status: 'aktif',
-    },
+    defaultValues: rule ? rule : defaultRuleValues,
   });
 
   useEffect(() => {
     if (isOpen) {
-      // Fetch unique transaction types every time the dialog opens
       const taxData = getTaxData();
       const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
       setTransactionTypes(uniqueTypes);
 
-      form.reset(rule || {
-          jenisTransaksi: '',
-          wp: 'Tidak ada',
-          fakturPajak: 'Tidak ada',
-          asnNonAsn: 'Tidak ada',
-          golongan: 'Tidak ada',
-          sertifikatKonstruksi: 'Tidak ada',
-          jenisPajak: '',
-          kodePajakEbillingPPh: '',
-          dppRasio: '',
-          ptkp: '',
-          tarifPajak: '',
-          kenaPpn: 'tidak',
-          kodePajakEbillingPpn: '',
-          status: 'aktif',
-      });
+      form.reset(rule || defaultRuleValues);
     }
   }, [rule, form, isOpen]);
 
