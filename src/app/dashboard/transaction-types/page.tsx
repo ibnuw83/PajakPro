@@ -9,17 +9,42 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreHorizontal, PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { TransactionTypeForm } from '@/components/transaction-type-form';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { type TaxDataRow } from '@/lib/types';
+import { useToast } from '@/hooks/use-toast';
 
+const STORAGE_KEY = 'taxData';
 
 export default function TransactionTypesPage() {
+    const [taxRules, setTaxRules] = useState<TaxDataRow[]>([]);
     const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
+    const { toast } = useToast();
 
     useEffect(() => {
-        const initialData = getTaxData();
-        setTransactionTypes([...new Set(initialData.map(d => d.jenisTransaksi))]);
+        let storedData;
+        try {
+            const item = window.localStorage.getItem(STORAGE_KEY);
+            storedData = item ? JSON.parse(item) : null;
+        } catch (error) {
+            console.error("Failed to parse tax data from localStorage", error);
+            storedData = null;
+        }
+        
+        const initialData = storedData || getTaxData();
+        setTaxRules(initialData);
+        setTransactionTypes([...new Set(initialData.map((d: TaxDataRow) => d.jenisTransaksi))].sort());
     }, []);
+
+    const updateData = (updatedData: TaxDataRow[]) => {
+        setTaxRules(updatedData);
+        setTransactionTypes([...new Set(updatedData.map((d: TaxDataRow) => d.jenisTransaksi))].sort());
+        try {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedData));
+        } catch (error) {
+            console.error("Failed to save tax data to localStorage", error);
+        }
+    };
 
     const handleAddNew = () => {
         setSelectedType(undefined);
@@ -32,19 +57,55 @@ export default function TransactionTypesPage() {
     };
 
     const handleDelete = (typeToDelete: string) => {
-        setTransactionTypes(currentTypes => currentTypes.filter(type => type !== typeToDelete));
-        // In a real app, you would also update any tax rules using this type.
+        // Create a copy of the rules, but filter out any that use the type being deleted.
+        const updatedRules = taxRules.filter(rule => rule.jenisTransaksi !== typeToDelete);
+        updateData(updatedRules);
+        toast({
+          title: "Jenis Transaksi Dihapus",
+          description: `"${typeToDelete}" dan semua aturan pajak terkait telah dihapus.`,
+        });
     };
 
-    const handleSave = (name: string) => {
-        if (selectedType) {
-            setTransactionTypes(currentTypes => currentTypes.map(t => (t === selectedType ? name : t)));
-             // In a real app, you would find and update all tax rules that use the old name.
-        } else {
-            if (!transactionTypes.includes(name)) {
-                setTransactionTypes(currentTypes => [name, ...currentTypes]);
+    const handleSave = (newName: string) => {
+        let updatedRules: TaxDataRow[];
+
+        if (selectedType) { // Editing an existing type
+            if (newName !== selectedType && transactionTypes.includes(newName)) {
+                toast({ variant: "destructive", title: "Gagal", description: "Nama jenis transaksi sudah ada." });
+                return;
             }
+            updatedRules = taxRules.map(rule => 
+                rule.jenisTransaksi === selectedType ? { ...rule, jenisTransaksi: newName } : rule
+            );
+            toast({ title: "Berhasil", description: `"${selectedType}" diubah menjadi "${newName}".`});
+        } else { // Adding a new type
+            if (transactionTypes.includes(newName)) {
+                toast({ variant: "destructive", title: "Gagal", description: "Nama jenis transaksi sudah ada." });
+                return;
+            }
+            // To add a new type, we add a new default/placeholder rule for it.
+            const newRule: TaxDataRow = {
+                id: `rule-${Date.now()}`,
+                jenisTransaksi: newName,
+                wp: 'Tidak ada',
+                fakturPajak: null,
+                asnNonAsn: null,
+                golongan: null,
+                sertifikatKonstruksi: null,
+                jenisPajak: 'Belum diatur',
+                kodePajakEbillingPPh: null,
+                dppRasio: null,
+                ptkp: null,
+                tarifPajak: '0%',
+                kenaPpn: 'tidak',
+                kodePajakEbillingPpn: null,
+                status: 'non-aktif',
+            };
+            updatedRules = [newRule, ...taxRules];
+            toast({ title: "Berhasil", description: `Jenis transaksi baru "${newName}" telah ditambahkan.`});
         }
+        
+        updateData(updatedRules);
         setIsFormOpen(false);
         setSelectedType(undefined);
     };
@@ -55,7 +116,7 @@ export default function TransactionTypesPage() {
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h1 className="text-3xl font-bold">Jenis Transaksi</h1>
-                    <p className="text-muted-foreground">Lihat dan kelola semua jenis transaksi yang tersedia.</p>
+                    <p className="text-muted-foreground">Lihat dan kelola semua jenis transaksi. Perubahan akan disimpan secara permanen.</p>
                 </div>
                  <Button onClick={handleAddNew}>
                     <PlusCircle className="mr-2 h-4 w-4" />
@@ -97,7 +158,7 @@ export default function TransactionTypesPage() {
                                                 <AlertDialogHeader>
                                                 <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    Tindakan ini tidak dapat dibatalkan. Ini akan menghapus jenis transaksi secara permanen.
+                                                    Tindakan ini tidak dapat dibatalkan. Ini akan menghapus jenis transaksi dan SEMUA aturan pajak yang menggunakannya.
                                                 </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
