@@ -32,7 +32,7 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    const settings = getSettings(); // No await needed
+    const settings = getSettings();
     form.reset(settings);
     if (settings.logoUrl) {
       setLogoPreview(settings.logoUrl);
