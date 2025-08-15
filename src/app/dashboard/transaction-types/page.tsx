@@ -24,18 +24,18 @@ import { type TaxDataRow } from '@/lib/types';
 
 
 export default function TransactionTypesPage() {
-    const dataSource = getTaxData;
-    const dataUpdater = updateTaxData;
-
     const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
     const [originalType, setOriginalType] = useState<string | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const refreshData = () => {
-        const taxData = dataSource();
+    const refreshData = async () => {
+        setIsLoading(true);
+        const taxData = await getTaxData();
         const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
         setTransactionTypes(uniqueTypes);
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -55,15 +55,15 @@ export default function TransactionTypesPage() {
         setIsFormOpen(true);
     }
 
-    const handleDelete = (typeToDelete: string) => {
-        const currentTaxData = dataSource();
+    const handleDelete = async (typeToDelete: string) => {
+        const currentTaxData = await getTaxData();
         const updatedTaxData = currentTaxData.filter(rule => rule.jenisTransaksi !== typeToDelete);
-        dataUpdater(updatedTaxData);
-        refreshData();
+        await updateTaxData(updatedTaxData);
+        await refreshData();
     }
 
-    const handleSave = (newTypeName: string) => {
-        const currentTaxData = dataSource();
+    const handleSave = async (newTypeName: string) => {
+        const currentTaxData = await getTaxData();
         let updatedTaxData;
 
         if (originalType) { 
@@ -98,8 +98,8 @@ export default function TransactionTypesPage() {
             updatedTaxData = [newRule, ...currentTaxData];
         }
         
-        dataUpdater(updatedTaxData);
-        refreshData();
+        await updateTaxData(updatedTaxData);
+        await refreshData();
         setIsFormOpen(false);
     };
 
@@ -126,7 +126,11 @@ export default function TransactionTypesPage() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {transactionTypes.map((type, index) => (
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={2} className="text-center">Memuat data...</TableCell>
+                            </TableRow>
+                        ) : transactionTypes.map((type, index) => (
                           <TableRow key={index}>
                             <TableCell className="font-medium">{type}</TableCell>
                              <TableCell className="text-right">

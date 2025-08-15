@@ -24,6 +24,7 @@ const sectionSchema = z.object({
 });
 
 const infoContentSchema = z.object({
+  id: z.string(), // Keep id for update logic
   title: z.string().min(1, 'Judul harus diisi.'),
   description: z.string().min(1, 'Deskripsi harus diisi.'),
   sections: z.array(sectionSchema),
@@ -36,11 +37,12 @@ export default function EditInfoContentPage() {
   const { id } = params;
   const { toast } = useToast();
 
-  const [infoItem, setInfoItem] = useState<InfoContentItem | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const form = useForm<z.infer<typeof infoContentSchema>>({
     resolver: zodResolver(infoContentSchema),
     defaultValues: {
+      id: '',
       title: '',
       description: '',
       sections: [],
@@ -53,27 +55,31 @@ export default function EditInfoContentPage() {
   });
 
   useEffect(() => {
-    if (typeof id === 'string') {
-      const data = getInfoContentById(id);
-      if (data) {
-        setInfoItem(data);
-        form.reset(data);
-      } else {
-        router.push('/dashboard/info-content');
-      }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, router]);
+    if (typeof id !== 'string') return;
+    const fetchContent = async () => {
+        setIsLoading(true);
+        const data = await getInfoContentById(id);
+        if (data) {
+            form.reset(data);
+        } else {
+            // Handle case where content is not found
+            toast({
+                variant: "destructive",
+                title: "Konten tidak ditemukan",
+                description: "Konten yang Anda coba edit tidak ada lagi.",
+            });
+            router.push('/dashboard/info-content');
+        }
+        setIsLoading(false);
+    };
+
+    fetchContent();
+  }, [id, router, form, toast]);
   
-  const onSubmit = (values: z.infer<typeof infoContentSchema>) => {
+  const onSubmit = async (values: z.infer<typeof infoContentSchema>) => {
     if (typeof id !== 'string') return;
     
-    const updatedItem: InfoContentItem = {
-        id,
-        ...values
-    };
-    
-    updateInfoContentById(id, updatedItem);
+    await updateInfoContentById(id, values);
     
     toast({
       title: 'Konten berhasil disimpan!',
@@ -82,8 +88,8 @@ export default function EditInfoContentPage() {
     router.push('/dashboard/info-content');
   };
 
-  if (!infoItem) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <div>Memuat...</div>;
   }
 
   return (
@@ -97,7 +103,7 @@ export default function EditInfoContentPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Card>
             <CardHeader>
-              <CardTitle>Edit Konten: {infoItem.title}</CardTitle>
+              <CardTitle>Edit Konten: {form.getValues('title')}</CardTitle>
               <CardDescription>
                 Gunakan formulir di bawah ini untuk mengedit konten informasi.
                 <br/>

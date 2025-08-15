@@ -77,16 +77,19 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
   
   const form = useForm<z.infer<typeof taxRuleSchema>>({
     resolver: zodResolver(taxRuleSchema),
-    defaultValues: rule ? rule : defaultRuleValues,
+    defaultValues: rule || defaultRuleValues,
   });
 
   useEffect(() => {
-    if (isOpen) {
-      const taxData = getTaxData();
-      const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
-      setTransactionTypes(uniqueTypes);
+    const fetchTransactionTypes = async () => {
+        const taxData = await getTaxData();
+        const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
+        setTransactionTypes(uniqueTypes);
+    };
 
-      form.reset(rule || defaultRuleValues);
+    if (isOpen) {
+        fetchTransactionTypes();
+        form.reset(rule || defaultRuleValues);
     }
   }, [rule, form, isOpen]);
 

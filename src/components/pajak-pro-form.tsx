@@ -38,7 +38,10 @@ export default function PajakProForm({ onCalculate }: PajakProFormProps) {
   const [taxData, setTaxData] = useState<TaxDataRow[]>([]);
   
   useEffect(() => {
-    setTaxData(getTaxData());
+    const fetchTaxData = async () => {
+        setTaxData(await getTaxData());
+    }
+    fetchTaxData();
   }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({

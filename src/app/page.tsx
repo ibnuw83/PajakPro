@@ -33,11 +33,14 @@ export default function Home() {
   const { toast } = useToast();
 
   useEffect(() => {
-    setInfoContent(getInfoContent());
-    setSettings(getSettings());
+    const fetchData = async () => {
+        setInfoContent(await getInfoContent());
+        setSettings(await getSettings());
+    }
+    fetchData();
   }, []);
 
-  const handleCalculate = useCallback((values: z.infer<typeof formSchema> | null) => {
+  const handleCalculate = useCallback(async (values: z.infer<typeof formSchema> | null) => {
       setIsLoading(true);
       setFormValues(values);
       if (!values) {
@@ -46,7 +49,7 @@ export default function Home() {
           return;
       }
       
-      const taxData = getTaxData();
+      const taxData = await getTaxData();
       const matchedRule = findMatchingRule(values, taxData);
 
       if (!matchedRule) {

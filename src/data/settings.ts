@@ -1,4 +1,8 @@
+'use server';
+
 import settingsJson from './settings.json';
+import fs from 'fs/promises';
+import path from 'path';
 
 export type AppSettings = {
     title: string;
@@ -7,18 +11,29 @@ export type AppSettings = {
     footerText: string;
 };
 
-const defaultSettings: AppSettings = settingsJson;
+const dataFilePath = path.join(process.cwd(), 'src', 'data', 'settings.json');
 
-// This function now simply returns the imported data.
-export const getSettings = (): AppSettings => {
-    return defaultSettings;
+// This function now reads the file on every call to ensure fresh data
+export const getSettings = async (): Promise<AppSettings> => {
+  try {
+    const fileContent = await fs.readFile(dataFilePath, 'utf8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    console.error("Error reading settings file:", error);
+    return settingsJson;
+  }
 };
 
-// This function is a placeholder for a real backend operation.
-export const updateSettings = (newSettings: Partial<AppSettings>): AppSettings => {
-    const currentSettings = getSettings();
+// This function now writes the updated data to the JSON file
+export const updateSettings = async (newSettings: Partial<AppSettings>): Promise<AppSettings> => {
+    const currentSettings = await getSettings();
     const updatedSettings = { ...currentSettings, ...newSettings };
-    console.log("Simulating settings update.");
-    console.log(JSON.stringify(updatedSettings, null, 2));
+    try {
+      const jsonString = JSON.stringify(updatedSettings, null, 2);
+      await fs.writeFile(dataFilePath, jsonString, 'utf8');
+      console.log("Settings successfully updated in settings.json");
+    } catch (error) {
+      console.error("Error writing to settings file:", error);
+    }
     return updatedSettings;
 };

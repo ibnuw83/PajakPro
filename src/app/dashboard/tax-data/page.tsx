@@ -11,65 +11,68 @@ import { type TaxDataRow } from '@/lib/types';
 
 
 export default function TaxDataPage() {
-    // Use window.getTaxData if it exists (for local simulation), otherwise fallback to static import
-    const dataSource = typeof window !== 'undefined' && (window as any).getTaxData ? (window as any).getTaxData : getTaxData;
-    const dataUpdater = typeof window !== 'undefined' && (window as any).updateTaxData ? (window as any).updateTaxData : updateTaxData;
-
-
     const [data, setData] = useState<TaxDataRow[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedRule, setSelectedRule] = useState<TaxDataRow | undefined>(undefined);
+    const [originalRule, setOriginalRule] = useState<TaxDataRow | undefined>(undefined);
+
+
+    const refreshData = async () => {
+        setIsLoading(true);
+        const freshData = await getTaxData();
+        setData(freshData);
+        setIsLoading(false);
+    }
 
     useEffect(() => {
-        setData(dataSource());
-    }, [dataSource]);
-
-    const refreshData = () => {
-        const freshData = dataSource();
-        setData(freshData);
-    }
+        refreshData();
+    }, []);
 
     const handleAdd = () => {
         setSelectedRule(undefined);
+        setOriginalRule(undefined);
         setIsFormOpen(true);
     }
 
     const handleEdit = (rule: TaxDataRow) => {
         setSelectedRule(rule);
+        setOriginalRule(rule);
         setIsFormOpen(true);
     }
 
-    const handleDelete = (ruleToDelete: TaxDataRow) => {
-        const currentData = dataSource();
+    const handleDelete = async (ruleToDelete: TaxDataRow) => {
+        const currentData = await getTaxData();
         const updatedData = currentData.filter(rule => 
             JSON.stringify(rule) !== JSON.stringify(ruleToDelete)
         );
-        dataUpdater(updatedData);
+        await updateTaxData(updatedData);
         refreshData();
     }
 
-    const handleToggleStatus = (ruleToToggle: TaxDataRow) => {
-        const currentData = dataSource();
+    const handleToggleStatus = async (ruleToToggle: TaxDataRow) => {
+        const currentData = await getTaxData();
         const updatedData = currentData.map(rule => 
             JSON.stringify(rule) === JSON.stringify(ruleToToggle) 
             ? { ...rule, status: rule.status === 'aktif' ? 'non-aktif' : 'aktif' }
             : rule
         );
-        dataUpdater(updatedData);
+        await updateTaxData(updatedData);
         refreshData();
     }
 
-    const handleSave = (ruleToSave: TaxDataRow) => {
-        const currentData = dataSource();
+    const handleSave = async (ruleToSave: TaxDataRow) => {
+        const currentData = await getTaxData();
         let updatedData;
-        if (selectedRule) { // Editing existing rule
+        
+        if (originalRule) { // Editing existing rule
             updatedData = currentData.map(rule => 
-                JSON.stringify(rule) === JSON.stringify(selectedRule) ? ruleToSave : rule
+                JSON.stringify(rule) === JSON.stringify(originalRule) ? ruleToSave : rule
             );
         } else { // Adding new rule
             updatedData = [ruleToSave, ...currentData];
         }
-        dataUpdater(updatedData);
+        await updateTaxData(updatedData);
         refreshData();
         setIsFormOpen(false);
     };
@@ -94,6 +97,7 @@ export default function TaxDataPage() {
                         onEdit={handleEdit}
                         onDelete={handleDelete}
                         onToggleStatus={handleToggleStatus}
+                        isLoading={isLoading}
                     />
                 </CardContent>
             </Card>

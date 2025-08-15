@@ -24,15 +24,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Skeleton } from "./ui/skeleton";
 
 interface TaxDataTableProps {
   data: TaxDataRow[];
   onEdit: (rule: TaxDataRow) => void;
   onDelete: (rule: TaxDataRow) => void;
   onToggleStatus: (rule: TaxDataRow) => void;
+  isLoading: boolean;
 }
 
-export function TaxDataTable({ data, onEdit, onDelete, onToggleStatus }: TaxDataTableProps) {
+export function TaxDataTable({ data, onEdit, onDelete, onToggleStatus, isLoading }: TaxDataTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -47,7 +49,19 @@ export function TaxDataTable({ data, onEdit, onDelete, onToggleStatus }: TaxData
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((row, index) => (
+        {isLoading ? (
+            Array.from({ length: 5 }).map((_, index) => (
+                <TableRow key={index}>
+                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-20" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-12" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-16" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-16" /></TableCell>
+                    <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                </TableRow>
+            ))
+        ) : data.map((row, index) => (
           <TableRow key={index}>
             <TableCell className="font-medium max-w-xs truncate">{row.jenisTransaksi}</TableCell>
             <TableCell>{row.wp}</TableCell>

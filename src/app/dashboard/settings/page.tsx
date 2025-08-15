@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { getSettings, updateSettings, type AppSettings } from '@/data/settings';
+import { getSettings, updateSettings } from '@/data/settings';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import Image from 'next/image';
 
@@ -27,15 +27,24 @@ export default function SettingsPage() {
 
   const form = useForm<z.infer<typeof settingsSchema>>({
     resolver: zodResolver(settingsSchema),
-    defaultValues: getSettings(),
+    defaultValues: {
+        title: '',
+        description: '',
+        logoUrl: '',
+        footerText: ''
+    },
   });
 
   useEffect(() => {
-    const settings = getSettings();
-    if (settings.logoUrl) {
-      setLogoPreview(settings.logoUrl);
-    }
-  }, []);
+    const fetchSettings = async () => {
+        const settings = await getSettings();
+        form.reset(settings);
+        if (settings.logoUrl) {
+          setLogoPreview(settings.logoUrl);
+        }
+    };
+    fetchSettings();
+  }, [form]);
 
   const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -50,13 +59,14 @@ export default function SettingsPage() {
     }
   };
 
-  const onSubmit = (values: z.infer<typeof settingsSchema>) => {
-    updateSettings(values);
+  const onSubmit = async (values: z.infer<typeof settingsSchema>) => {
+    await updateSettings(values);
     toast({
       title: 'Pengaturan disimpan!',
-      description: 'Perubahan Anda telah disimulasikan. Untuk persistensi, perbarui file JSON.',
+      description: 'Perubahan Anda telah disimpan di file settings.json.',
     });
     // Consider page reload or state update to reflect changes globally
+    // window.location.reload();
   };
 
   return (
@@ -118,7 +128,7 @@ export default function SettingsPage() {
                 <CardHeader>
                     <CardTitle>Footer</CardTitle>
                     <CardDescription>Atur teks yang ditampilkan di bagian bawah halaman. Gunakan {'{year}'} untuk menampilkan tahun saat ini.</CardDescription>
-                </CardHeader>
+                </Header>
                 <CardContent>
                      <FormField
                         control={form.control}

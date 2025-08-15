@@ -8,13 +8,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { getInfoContent } from '@/data/info-content';
 import { type InfoContentItem } from '@/lib/types';
 import { Edit } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function InfoContentPage() {
     const router = useRouter();
     const [contentItems, setContentItems] = useState<InfoContentItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        setContentItems(getInfoContent());
+        const fetchContent = async () => {
+            setIsLoading(true);
+            const content = await getInfoContent();
+            setContentItems(content);
+            setIsLoading(false);
+        }
+        fetchContent();
     }, []);
 
     const handleEdit = (id: string) => {
@@ -40,7 +48,15 @@ export default function InfoContentPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {contentItems.map((item) => (
+                            {isLoading ? (
+                                Array.from({length: 5}).map((_, i) => (
+                                    <TableRow key={i}>
+                                        <TableCell><Skeleton className='h-5 w-32'/></TableCell>
+                                        <TableCell><Skeleton className='h-5 w-64'/></TableCell>
+                                        <TableCell className="text-right"><Skeleton className='h-8 w-20 ml-auto'/></TableCell>
+                                    </TableRow>
+                                ))
+                            ) : contentItems.map((item) => (
                                 <TableRow key={item.id}>
                                     <TableCell className="font-medium">{item.title}</TableCell>
                                     <TableCell className="text-muted-foreground">{item.description}</TableCell>
