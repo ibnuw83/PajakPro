@@ -1,5 +1,21 @@
 [
   {
+    "jenisTransaksi": "Service Kendaraan, AC,Laptop, dll - <2jt",
+    "wp": "Tidak ada",
+    "fakturPajak": null,
+    "asnNonAsn": null,
+    "golongan": null,
+    "sertifikatKonstruksi": null,
+    "jenisPajak": "Belum diatur",
+    "kodePajakEbillingPPh": null,
+    "dppRasio": null,
+    "ptkp": null,
+    "tarifPajak": "0%",
+    "kenaPpn": "tidak",
+    "kodePajakEbillingPpn": null,
+    "status": "aktif"
+  },
+  {
     "jenisTransaksi": "Makan Minum",
     "wp": "Orang Pribadi",
     "fakturPajak": null,
@@ -16,7 +32,7 @@
     "status": "aktif"
   },
   {
-    "jenisTransaksi": "Service Kendaraan, AC,Laptop, dll",
+    "jenisTransaksi": "Service Kendaraan, AC,Laptop, dll - >2jt",
     "wp": "Orang Pribadi",
     "fakturPajak": "Tidak dapat menerbitkan",
     "asnNonAsn": null,
@@ -272,7 +288,7 @@
     "status": "aktif"
   },
   {
-    "jenisTransaksi": "Service Kendaraan, AC,Laptop, dll",
+    "jenisTransaksi": "Service Kendaraan, AC,Laptop, dll - >2jt",
     "wp": "Badan Usaha",
     "fakturPajak": "Dapat menerbitkan",
     "asnNonAsn": null,
@@ -461,22 +477,6 @@
     "tarifPajak": "6%",
     "kenaPpn": "ya",
     "kodePajakEbillingPpn": "411211-900",
-    "status": "aktif"
-  },
-  {
-    "jenisTransaksi": "Service Kendaraan, AC,Laptop, dll",
-    "wp": "Badan Usaha",
-    "fakturPajak": "Tidak dapat menerbitkan",
-    "asnNonAsn": null,
-    "golongan": null,
-    "sertifikatKonstruksi": null,
-    "jenisPajak": "PPh 23",
-    "kodePajakEbillingPPh": "411124-104",
-    "dppRasio": "100/111",
-    "ptkp": "> 2000000",
-    "tarifPajak": "2%",
-    "kenaPpn": "ya",
-    "kodePajakEbillingPpn": "411211-108",
     "status": "aktif"
   },
   {
