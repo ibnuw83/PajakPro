@@ -20,12 +20,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { type TaxDataRow } from '@/lib/types';
 
 
 export default function TransactionTypesPage() {
-    // Use window.getTaxData if it exists (for local simulation), otherwise fallback to static import
-    const dataSource = typeof window !== 'undefined' && (window as any).getTaxData ? (window as any).getTaxData : getTaxData;
-    const dataUpdater = typeof window !== 'undefined' && (window as any).updateTaxData ? (window as any).updateTaxData : updateTaxData;
+    const dataSource = getTaxData;
+    const dataUpdater = updateTaxData;
 
     const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -40,7 +40,7 @@ export default function TransactionTypesPage() {
 
     useEffect(() => {
         refreshData();
-    }, [dataSource]);
+    }, []);
 
 
     const handleAdd = () => {
@@ -64,23 +64,42 @@ export default function TransactionTypesPage() {
 
     const handleSave = (newTypeName: string) => {
         const currentTaxData = dataSource();
-        let updatedTaxData = [...currentTaxData];
+        let updatedTaxData;
 
-        if (originalType && originalType !== newTypeName) { // Editing existing type
-            updatedTaxData = currentTaxData.map(rule => 
-                rule.jenisTransaksi === originalType ? { ...rule, jenisTransaksi: newTypeName } : rule
-            );
+        if (originalType) { 
+            // Editing existing type name
+            if (originalType !== newTypeName) {
+                updatedTaxData = currentTaxData.map(rule => 
+                    rule.jenisTransaksi === originalType ? { ...rule, jenisTransaksi: newTypeName } : rule
+                );
+            } else {
+                // Name is the same, no changes needed
+                setIsFormOpen(false);
+                return;
+            }
+        } else {
+            // Adding a new transaction type
+            const newRule: TaxDataRow = {
+                jenisTransaksi: newTypeName,
+                wp: 'Tidak ada',
+                fakturPajak: null,
+                asnNonAsn: null,
+                golongan: null,
+                sertifikatKonstruksi: null,
+                jenisPajak: 'Belum diatur',
+                kodePajakEbillingPPh: null,
+                dppRasio: null,
+                ptkp: null,
+                tarifPajak: '0%',
+                kenaPpn: 'tidak',
+                kodePajakEbillingPpn: null,
+                status: 'non-aktif',
+            };
+            updatedTaxData = [newRule, ...currentTaxData];
         }
         
         dataUpdater(updatedTaxData);
-        
-        // This ensures the new type is visible immediately even if no rule uses it yet.
-        if (!originalType && !transactionTypes.includes(newTypeName)) {
-             setTransactionTypes(current => Array.from(new Set([...current, newTypeName])));
-        } else {
-            refreshData();
-        }
-        
+        refreshData();
         setIsFormOpen(false);
     };
 
