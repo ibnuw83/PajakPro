@@ -19,14 +19,3 @@ export const getTaxData = async (): Promise<TaxDataRow[]> => {
     return taxDataJson as TaxDataRow[];
   }
 };
-
-// This function now writes the updated data to the JSON file
-export const updateTaxData = async (newData: TaxDataRow[]) => {
-  try {
-    const jsonString = JSON.stringify(newData, null, 2);
-    await fs.writeFile(dataFilePath, jsonString, 'utf8');
-    console.log("Tax data successfully updated in tax-data.json");
-  } catch (error) {
-    console.error("Error writing to tax data file:", error);
-  }
-};

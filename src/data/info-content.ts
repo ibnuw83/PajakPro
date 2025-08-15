@@ -18,27 +18,7 @@ export const getInfoContent = async (): Promise<InfoContentItem[]> => {
   }
 };
 
-// This function now writes the updated data to the JSON file
-export const updateInfoContent = async (newData: InfoContentItem[]) => {
-  try {
-    const jsonString = JSON.stringify(newData, null, 2);
-    await fs.writeFile(dataFilePath, jsonString, 'utf8');
-    console.log("Info content successfully updated in info-content.json");
-  } catch (error) {
-    console.error("Error writing to info content file:", error);
-  }
-};
-
 export const getInfoContentById = async (id: string): Promise<InfoContentItem | undefined> => {
     const data = await getInfoContent();
     return data.find(item => item.id === id);
-}
-
-export const updateInfoContentById = async (id: string, updatedItem: InfoContentItem) => {
-    const data = await getInfoContent();
-    const index = data.findIndex(item => item.id === id);
-    if (index !== -1) {
-        data[index] = updatedItem;
-        await updateInfoContent(data);
-    }
 }

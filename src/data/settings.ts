@@ -23,17 +23,3 @@ export const getSettings = async (): Promise<AppSettings> => {
     return settingsJson;
   }
 };
-
-// This function now writes the updated data to the JSON file
-export const updateSettings = async (newSettings: Partial<AppSettings>): Promise<AppSettings> => {
-    const currentSettings = await getSettings();
-    const updatedSettings = { ...currentSettings, ...newSettings };
-    try {
-      const jsonString = JSON.stringify(updatedSettings, null, 2);
-      await fs.writeFile(dataFilePath, jsonString, 'utf8');
-      console.log("Settings successfully updated in settings.json");
-    } catch (error) {
-      console.error("Error writing to settings file:", error);
-    }
-    return updatedSettings;
-};
