@@ -25,13 +25,13 @@ export default function TransactionTypesPage() {
     useEffect(() => {
         // Load tax rules
         const storedTaxRules = window.localStorage.getItem(TAX_RULES_STORAGE_KEY);
-        const initialTaxRules = storedTaxRules ? JSON.parse(storedTaxRules) : getTaxData();
+        const initialTaxRules = storedTaxRules ? (JSON.parse(storedTaxRules) as TaxDataRow[]) : getTaxData();
         setTaxRules(initialTaxRules);
 
         // Load transaction types
         const storedTransactionTypes = window.localStorage.getItem(TRANSACTION_TYPES_STORAGE_KEY);
         if (storedTransactionTypes) {
-            setTransactionTypes(JSON.parse(storedTransactionTypes));
+            setTransactionTypes(JSON.parse(storedTransactionTypes) as string[]);
         } else {
             // If no stored types, derive from initial rules and store it
             const initialTypes = [...new Set(initialTaxRules.map((d: TaxDataRow) => d.jenisTransaksi))].sort();

@@ -22,7 +22,7 @@ export default function TaxDataPage() {
     useEffect(() => {
         // Load tax rules
         const storedRules = window.localStorage.getItem(TAX_RULES_STORAGE_KEY);
-        const initialRules = storedRules ? JSON.parse(storedRules) : getTaxData();
+        const initialRules = storedRules ? (JSON.parse(storedRules) as TaxDataRow[]) : getTaxData();
         setData(initialRules);
         
         // Load transaction types
