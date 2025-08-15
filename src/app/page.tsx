@@ -33,11 +33,9 @@ export default function Home() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const fetchData = async () => {
-        setInfoContent(await getInfoContent());
-        setSettings(await getSettings());
-    }
-    fetchData();
+    // No need for async, data is imported directly
+    setInfoContent(getInfoContent());
+    setSettings(getSettings());
   }, []);
 
   const handleCalculate = useCallback(async (values: z.infer<typeof formSchema> | null) => {
@@ -49,7 +47,7 @@ export default function Home() {
           return;
       }
       
-      const taxData = await getTaxData();
+      const taxData = getTaxData(); // No await needed
       const matchedRule = findMatchingRule(values, taxData);
 
       if (!matchedRule) {

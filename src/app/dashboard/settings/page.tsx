@@ -32,14 +32,11 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    const fetchSettings = async () => {
-        const settings = await getSettings();
-        form.reset(settings);
-        if (settings.logoUrl) {
-          setLogoPreview(settings.logoUrl);
-        }
-    };
-    fetchSettings();
+    const settings = getSettings(); // No await needed
+    form.reset(settings);
+    if (settings.logoUrl) {
+      setLogoPreview(settings.logoUrl);
+    }
   }, [form]);
 
   return (

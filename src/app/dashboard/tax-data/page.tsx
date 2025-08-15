@@ -11,9 +11,9 @@ export default function TaxDataPage() {
     const [data, setData] = useState<TaxDataRow[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const refreshData = async () => {
+    const refreshData = () => {
         setIsLoading(true);
-        const freshData = await getTaxData();
+        const freshData = getTaxData(); // No await needed
         setData(freshData);
         setIsLoading(false);
     }

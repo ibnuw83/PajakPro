@@ -11,9 +11,9 @@ export default function TransactionTypesPage() {
     const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const refreshData = async () => {
+    const refreshData = () => {
         setIsLoading(true);
-        const taxData = await getTaxData();
+        const taxData = getTaxData(); // No await needed
         const uniqueTypes = [...new Set(taxData.map(d => d.jenisTransaksi))];
         setTransactionTypes(uniqueTypes);
         setIsLoading(false);

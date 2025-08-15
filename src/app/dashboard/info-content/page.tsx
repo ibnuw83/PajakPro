@@ -12,9 +12,9 @@ export default function InfoContentPage() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchContent = async () => {
+        const fetchContent = () => {
             setIsLoading(true);
-            const content = await getInfoContent();
+            const content = getInfoContent(); // No await needed
             setContentItems(content);
             setIsLoading(false);
         }
