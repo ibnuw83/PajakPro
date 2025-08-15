@@ -34,7 +34,7 @@ export default function TransactionTypesPage() {
             setTransactionTypes(JSON.parse(storedTransactionTypes) as string[]);
         } else {
             // If no stored types, derive from initial rules and store it
-            const initialTypes = [...new Set(initialTaxRules.map((d: TaxDataRow) => d.jenisTransaksi))].sort();
+            const initialTypes = Array.from(new Set<string>(initialTaxRules.map((d: TaxDataRow) => d.jenisTransaksi))).sort();
             setTransactionTypes(initialTypes);
             window.localStorage.setItem(TRANSACTION_TYPES_STORAGE_KEY, JSON.stringify(initialTypes));
         }

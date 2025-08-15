@@ -28,10 +28,10 @@ export default function TaxDataPage() {
         // Load transaction types
         const storedTypes = window.localStorage.getItem(TRANSACTION_TYPES_STORAGE_KEY);
         if (storedTypes) {
-            setTransactionTypes(JSON.parse(storedTypes));
+            setTransactionTypes(JSON.parse(storedTypes) as string[]);
         } else {
             // If no stored types, derive from initial rules and then store it
-            const initialTypes = [...new Set(initialRules.map((d: TaxDataRow) => d.jenisTransaksi))].sort();
+            const initialTypes = Array.from(new Set<string>(initialRules.map((d: TaxDataRow) => d.jenisTransaksi))).sort();
             setTransactionTypes(initialTypes);
             window.localStorage.setItem(TRANSACTION_TYPES_STORAGE_KEY, JSON.stringify(initialTypes));
         }
