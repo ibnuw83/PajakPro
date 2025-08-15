@@ -58,9 +58,10 @@ export function calculateTaxes(nilaiTransaksi: number, rule: TaxDataRow) {
 
     const ppn = rule.kenaPpn === 'ya' ? dpp * 0.11 : 0;
     
-    // totalBayar is the net amount received by the provider/vendor
-    const totalBayar = nilaiTransaksi - pph;
     const totalPajak = pph + ppn;
+    // totalBayar is the net amount received by the provider/vendor
+    const totalBayar = nilaiTransaksi - totalPajak;
+    
 
     return {
         matchedRule: rule,
