@@ -71,13 +71,23 @@ const defaultRuleValues: TaxDataRow = {
     status: 'aktif',
 };
 
+// Fungsi untuk convert semua null -> undefined di object
+function normalizeNullToUndefined<T extends Record<string, any>>(obj: T): T {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [
+      key,
+      value === null ? undefined : value,
+    ])
+  ) as T;
+}
+
 
 export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormProps) {
   const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
   
   const form = useForm<z.infer<typeof taxRuleSchema>>({
     resolver: zodResolver(taxRuleSchema),
-    defaultValues: rule || defaultRuleValues,
+    defaultValues: rule ? normalizeNullToUndefined(rule) : (defaultRuleValues as any),
   });
 
   useEffect(() => {
@@ -89,7 +99,7 @@ export function TaxDataForm({ isOpen, onOpenChange, onSave, rule }: TaxDataFormP
 
     if (isOpen) {
         fetchTransactionTypes();
-        form.reset(rule || defaultRuleValues);
+        form.reset(rule ? normalizeNullToUndefined(rule) : (defaultRuleValues as any));
     }
   }, [rule, form, isOpen]);
 
