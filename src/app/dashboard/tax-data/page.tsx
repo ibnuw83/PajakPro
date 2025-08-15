@@ -73,11 +73,13 @@ export default function TaxDataPage() {
     };
     
     const handleToggleStatus = (ruleToToggle: TaxDataRow) => {
-        const updatedData = data.map(rule => 
-            rule.id === ruleToToggle.id 
-            ? { ...rule, status: rule.status === 'aktif' ? 'non-aktif' : 'aktif' as const }
-            : rule
-        );
+        const updatedData = data.map(rule => {
+            if (rule.id === ruleToToggle.id) {
+                const newStatus: 'aktif' | 'non-aktif' = rule.status === 'aktif' ? 'non-aktif' : 'aktif';
+                return { ...rule, status: newStatus };
+            }
+            return rule;
+        });
         updateData(updatedData);
     };
 
