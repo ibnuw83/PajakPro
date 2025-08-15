@@ -6,6 +6,6 @@ import taxDataJson from './tax-data.json';
 export const getTaxData = (): TaxDataRow[] => {
   return taxDataJson.map((row, index) => ({
     ...row,
-    id: `rule-${index}-${Date.now()}` // Add a simple unique ID
+    id: `rule-default-${index}` // Use a stable, predictable ID
   })) as TaxDataRow[];
 };
