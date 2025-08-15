@@ -51,7 +51,7 @@ export default function DashboardLayout({
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
         <div className="flex flex-col gap-2 p-4">
             <Link href="/" className="flex items-center gap-3 rounded-lg px-3 py-2 text-primary transition-all hover:text-primary">
-                {settings?.logoUrl ? (
+                {settings?.logoUrl && !settings.logoUrl.startsWith('data:image/') ? (
                     <Image src={settings.logoUrl} alt="Logo" width={24} height={24} className="h-6 w-6 object-contain" />
                 ) : (
                     <Calculator className="h-6 w-6" />
@@ -96,7 +96,7 @@ export default function DashboardLayout({
                   href="/"
                   className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                 >
-                  {settings?.logoUrl ? (
+                  {settings?.logoUrl && !settings.logoUrl.startsWith('data:image/') ? (
                       <Image src={settings.logoUrl} alt="Logo" width={20} height={20} className="h-5 w-5 object-contain transition-all group-hover:scale-110" />
                   ) : (
                       <Calculator className="h-5 w-5 transition-all group-hover:scale-110" />
